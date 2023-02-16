@@ -140,7 +140,7 @@ public class ChessJavaFX extends Application {
             tiles[i][j].getChildren().add(BKing);
         }
     }
-    private Parent createContext() throws FileNotFoundException {
+    private Parent createContext() {
         root.setPrefSize(600, 600);
         for (int i = 0; i < y; i++) {
             for (int j = 0; j < x; j++) {
