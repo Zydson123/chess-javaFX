@@ -23,21 +23,28 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ChessJavaFX extends Application {
+    private boolean turn=true;
     private boolean isPieceSelected=false;
     private boolean isMoveSelected=false;
     private Pane root = new Pane();
     private int y = 8;
     private int x = 8;
-    private Piece board[][] = new Piece[y][x];
-    private GridPane tiles[][] = new GridPane[y][x];
+    private Piece board[][] = new Piece[8][8];
+    private GridPane tiles[][] = new GridPane[8][8];
+    int XofPiece=0, YofPiece=0;
 
-    public static void color_tiles(GridPane tiles[][], int i, int j){
-        int kot = j+1;
-        int pies = i+1;
-        if(!((kot%2!=0 && pies%2!=0) || (kot%2==0 && pies%2==0))){
-            tiles[i][j].setBackground((new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY))));
-        }
-    }
+    Piece piece = board[0][0];
+
+    public static void color_tiles(GridPane tiles[][],int i,int j){
+                int kot = j+1;
+                int pies = i+1;
+                if(!((kot%2!=0 && pies%2!=0) || (kot%2==0 && pies%2==0))){
+                    tiles[i][j].setBackground((new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY))));
+                }
+                else{
+                    tiles[i][j].setBackground((new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY))));
+                }
+            }
 
 
     public static void fill_board(Piece board[][]){
@@ -77,7 +84,7 @@ public class ChessJavaFX extends Application {
         }
 
     }
-    public static void give_image(GridPane tiles[][], Piece board[][], int i, int j) {
+    public void give_image(GridPane tiles2[][], Piece board[][], int i, int j) {
         String path = "C:\\Users\\kubab\\chess-javaFX\\src\\main\\java\\com\\example\\chessjavafx\\pieces\\";
         Image image = new Image(path + "WPawn.png");
         ImageView WPawn = new ImageView(image);
@@ -104,40 +111,40 @@ public class ChessJavaFX extends Application {
         image = new Image(path + "WKing.png");
         ImageView WKing = new ImageView(image);
         if(board[i][j].getType()=='P' && board[i][j].getColor()){
-            tiles[i][j].getChildren().add(WPawn);
+            tiles2[i][j].getChildren().add(WPawn);
         }
-        if(board[i][j].getType()=='P' && !board[i][j].getColor()){
-            tiles[i][j].getChildren().add(BPawn);
+        else if(board[i][j].getType()=='P' && !board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(BPawn);
         }
-        if(board[i][j].getType()=='R' && board[i][j].getColor()){
-            tiles[i][j].getChildren().add(WRook);
+        else if(board[i][j].getType()=='R' && board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(WRook);
         }
-        if(board[i][j].getType()=='R' && !board[i][j].getColor()){
-            tiles[i][j].getChildren().add(BRook);
+        else if(board[i][j].getType()=='R' && !board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(BRook);
         }
-        if(board[i][j].getType()=='Q' && board[i][j].getColor()){
-            tiles[i][j].getChildren().add(WQueen);
+        else if(board[i][j].getType()=='Q' && board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(WQueen);
         }
-        if(board[i][j].getType()=='Q' && !board[i][j].getColor()){
-            tiles[i][j].getChildren().add(BQueen);
+        else if(board[i][j].getType()=='Q' && !board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(BQueen);
         }
-        if(board[i][j].getType()=='B' && board[i][j].getColor()){
-            tiles[i][j].getChildren().add(WBishop);
+        else if(board[i][j].getType()=='B' && board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(WBishop);
         }
-        if(board[i][j].getType()=='B' && !board[i][j].getColor()){
-            tiles[i][j].getChildren().add(BBishop);
+        else if(board[i][j].getType()=='B' && !board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(BBishop);
         }
-        if(board[i][j].getType()=='N' && board[i][j].getColor()){
-            tiles[i][j].getChildren().add(WKnight);
+        else if(board[i][j].getType()=='N' && board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(WKnight);
         }
-        if(board[i][j].getType()=='N' && !board[i][j].getColor()){
-            tiles[i][j].getChildren().add(BKnight);
+        else if(board[i][j].getType()=='N' && !board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(BKnight);
         }
-        if(board[i][j].getType()=='K' && board[i][j].getColor()){
-            tiles[i][j].getChildren().add(WKing);
+        else if(board[i][j].getType()=='K' && board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(WKing);
         }
-        if(board[i][j].getType()=='K' && !board[i][j].getColor()){
-            tiles[i][j].getChildren().add(BKing);
+        else if(board[i][j].getType()=='K' && !board[i][j].getColor()){
+            tiles2[i][j].getChildren().add(BKing);
         }
     }
     private Parent createContext() {
@@ -156,7 +163,8 @@ public class ChessJavaFX extends Application {
         return root;
     }
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage){
+        System.out.println("pies");
         fill_board(board);
         add_pieces(board);
         stage.setScene(new Scene(createContext()));
@@ -182,20 +190,53 @@ public class ChessJavaFX extends Application {
 
             getChildren().addAll(border, text);
 
+
             setOnMouseClicked(e -> {
                 if(e.getButton()== MouseButton.PRIMARY){
-                    if(isPieceSelected){
-
-                    }
-                    else if(!isPieceSelected && !isMoveSelected){
-                        Piece selectedPiece = board[this.getY()][this.getX()];
+                    if(!isPieceSelected && !isMoveSelected && board[this.getY()][this.getX()].getType()!='l' && board[this.getY()][this.getX()].getColor()==turn){
                         this.setBackground((new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY))));
-                        System.out.println("X: " + this.getX());
-                        System.out.println("Y: " + this.getY());
-                        System.out.println(selectedPiece);
-                        System.out.println("X of piece: " + selectedPiece.getPosY());
-                        System.out.println("Y of piece: " + selectedPiece.getPosX());
+                        XofPiece = this.getX();
+                        YofPiece = this.getY();
+                        System.out.println("X of piece: " + XofPiece);
+                        System.out.println("Y of piece: " + YofPiece);
+                        piece = board[YofPiece][XofPiece];
                         isPieceSelected=true;
+                    }
+                    else if(isPieceSelected && !isMoveSelected ){
+                        int XofTarget = this.getX();
+                        int YofTarget = this.getY();
+                        System.out.println("X of target: " + XofTarget);
+                        System.out.println("Y of target: " + YofTarget);
+                        System.out.println("your piece: " + board[YofPiece][XofPiece]);
+                        System.out.println("target square before: " + board[YofTarget][XofTarget]);
+                        board[YofTarget][XofTarget] = piece;
+                        board[YofPiece][XofPiece] = new Piece('l',false,YofPiece,XofPiece,true);
+                        isPieceSelected = false;
+                        isMoveSelected = false;
+                        for(int i=0; i<8; i++){
+                            for(int j=0; j<8;j++){
+                                GridPane tile = new GridPane(j,i);
+                                tile.setTranslateX(j * 75);
+                                tile.setTranslateY(i * 75);
+                                root.getChildren().add(tile);
+                                tiles[i][j] = tile;
+                                give_image(tiles,board,i,j);
+                                color_tiles(tiles,i,j);
+                            }
+                        }
+                        System.out.println("target square after: " + board[YofTarget][XofTarget]);
+                        if(turn) turn = false;
+                        else turn = true;
+                    }
+                }
+                else if(e.getButton() == MouseButton.SECONDARY){
+                    isPieceSelected = false;
+                    isMoveSelected = false;
+                    for(int i=0; i<8; i++){
+                        for(int j=0; j<8;j++){
+                            give_image(tiles,board,i,j);
+                            color_tiles(tiles,i,j);
+                        }
                     }
                 }
             });
