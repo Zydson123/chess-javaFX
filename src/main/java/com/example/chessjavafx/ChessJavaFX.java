@@ -7,6 +7,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -15,6 +17,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ChessJavaFX extends Application {
@@ -24,9 +29,9 @@ public class ChessJavaFX extends Application {
     private int y = 8;
     private int x = 8;
     private Piece board[][] = new Piece[y][x];
-    private Button buttons[][] = new Button[y][x];
+    private GridPane tiles[][] = new GridPane[y][x];
 
-    public static void color_tiles(Button tiles[][], int i, int j){
+    public static void color_tiles(GridPane tiles[][], int i, int j){
         int kot = j+1;
         int pies = i+1;
         if(!((kot%2!=0 && pies%2!=0) || (kot%2==0 && pies%2==0))){
@@ -72,24 +77,80 @@ public class ChessJavaFX extends Application {
         }
 
     }
-    public static void print_board(Button buttons[][], Piece board[][]){
-        for (int i = 0; i < buttons.length; i++)
-        {
-            for (int j=0; j < buttons.length; j++){
-                buttons[i][j].draw(board[i][j].print_piece());
-            }
+    public static void give_image(GridPane tiles[][], Piece board[][], int i, int j) {
+        String path = "C:\\Users\\kubab\\chess-javaFX\\src\\main\\java\\com\\example\\chessjavafx\\pieces\\";
+        Image image = new Image(path + "WPawn.png");
+        ImageView WPawn = new ImageView(image);
+        image = new Image(path + "BPawn.png");
+        ImageView BPawn = new ImageView(image);
+        image = new Image(path + "WRook.png");
+        ImageView WRook = new ImageView(image);
+        image = new Image(path + "BRook.png");
+        ImageView BRook = new ImageView(image);
+        image = new Image(path + "WBishop.png");
+        ImageView WBishop = new ImageView(image);
+        image = new Image(path + "BBishop.png");
+        ImageView BBishop = new ImageView(image);
+        image = new Image(path + "WKnight.png");
+        ImageView WKnight = new ImageView(image);
+        image = new Image(path + "BKnight.png");
+        ImageView BKnight = new ImageView(image);
+        image = new Image(path + "WQueen.png");
+        ImageView WQueen = new ImageView(image);
+        image = new Image(path + "BQueen.png");
+        ImageView BQueen = new ImageView(image);
+        image = new Image(path + "BKing.png");
+        ImageView BKing = new ImageView(image);
+        image = new Image(path + "WKing.png");
+        ImageView WKing = new ImageView(image);
+        if(board[i][j].getType()=='P' && board[i][j].getColor()){
+            tiles[i][j].getChildren().add(WPawn);
+        }
+        if(board[i][j].getType()=='P' && !board[i][j].getColor()){
+            tiles[i][j].getChildren().add(BPawn);
+        }
+        if(board[i][j].getType()=='R' && board[i][j].getColor()){
+            tiles[i][j].getChildren().add(WRook);
+        }
+        if(board[i][j].getType()=='R' && !board[i][j].getColor()){
+            tiles[i][j].getChildren().add(BRook);
+        }
+        if(board[i][j].getType()=='Q' && board[i][j].getColor()){
+            tiles[i][j].getChildren().add(WQueen);
+        }
+        if(board[i][j].getType()=='Q' && !board[i][j].getColor()){
+            tiles[i][j].getChildren().add(BQueen);
+        }
+        if(board[i][j].getType()=='B' && board[i][j].getColor()){
+            tiles[i][j].getChildren().add(WBishop);
+        }
+        if(board[i][j].getType()=='B' && !board[i][j].getColor()){
+            tiles[i][j].getChildren().add(BBishop);
+        }
+        if(board[i][j].getType()=='N' && board[i][j].getColor()){
+            tiles[i][j].getChildren().add(WKnight);
+        }
+        if(board[i][j].getType()=='N' && !board[i][j].getColor()){
+            tiles[i][j].getChildren().add(BKnight);
+        }
+        if(board[i][j].getType()=='K' && board[i][j].getColor()){
+            tiles[i][j].getChildren().add(WKing);
+        }
+        if(board[i][j].getType()=='K' && !board[i][j].getColor()){
+            tiles[i][j].getChildren().add(BKing);
         }
     }
-    private Parent createContext() {
+    private Parent createContext() throws FileNotFoundException {
         root.setPrefSize(600, 600);
         for (int i = 0; i < y; i++) {
             for (int j = 0; j < x; j++) {
-                Button btn = new Button(j,i);
-                btn.setTranslateX(j * 75);
-                btn.setTranslateY(i * 75);
-                root.getChildren().add(btn);
-                buttons[i][j] = btn;
-                color_tiles(buttons,i,j);
+                GridPane tile = new GridPane(j,i);
+                tile.setTranslateX(j * 75);
+                tile.setTranslateY(i * 75);
+                root.getChildren().add(tile);
+                tiles[i][j] = tile;
+                give_image(tiles, board,i,j);
+                color_tiles(tiles,i,j);
             }
         }
         return root;
@@ -99,18 +160,17 @@ public class ChessJavaFX extends Application {
         fill_board(board);
         add_pieces(board);
         stage.setScene(new Scene(createContext()));
-        print_board(buttons,board);
         stage.show();
     }
 
     public static void main(String[] args) {
         launch();
     }
-    private class Button extends StackPane {
+    private class GridPane extends StackPane {
         private int x;
         private int y;
         private Text text = new Text();
-        public Button(int x, int y) {
+        public GridPane(int x, int y) {
             super();
             this.x = x;
             this.y = y;
