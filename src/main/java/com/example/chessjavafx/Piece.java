@@ -49,7 +49,7 @@ public class Piece {
             LegalPieces.add('R');
         }
         if(piece.getColor()==whoseTurn) {
-            if (board[posXofMove][posYofMove].check_legal(piece,board,posXofMove,posYofMove)==true) {
+            if (board[posXofMove][posYofMove].check_legal(piece,board,posXofMove,posYofMove)) {
                 board[piece.getPosX()][piece.getPosY()]= new Piece('l',false,piece.getPosX(),piece.getPosY(),true);
                 if(piece.getType()=='P' && piece.getColor()==true && posYofMove==0){
                     char pieceType = 'Q';
@@ -57,6 +57,7 @@ public class Piece {
                         piece.setPosX(posYofMove);
                         piece.setPosY(posXofMove);
                         board[piece.getPosX()][piece.getPosY()] = new Piece(pieceType, true, piece.getPosX(), piece.getPosY(), false);
+                        board[piece.getPosX()][piece.getPosY()].setDidMove(true);
                     }
                 }
                 else if(piece.getType()=='P' && piece.getColor()==false && posYofMove==7){
@@ -65,12 +66,14 @@ public class Piece {
                         piece.setPosX(posYofMove);
                         piece.setPosY(posXofMove);
                         board[piece.getPosX()][piece.getPosY()] = new Piece(pieceType, false, piece.getPosX(), piece.getPosY(), false);
+                        board[piece.getPosX()][piece.getPosY()].setDidMove(true);
                     }
                 }
                 else{
                     piece.setPosX(posYofMove);
                     piece.setPosY(posXofMove);
                     board[piece.getPosX()][piece.getPosY()]=piece;
+                    board[piece.getPosX()][piece.getPosY()].setDidMove(true);
                 }
             }
             else{
@@ -135,17 +138,8 @@ public class Piece {
             }
         }
         else if(piece.getType()=='N'){
-            /*System.out.println("X of piece: " + piece.getPosY()); //X
-            System.out.println("Y of piece: " + piece.getPosX()); //Y
-            //for some reason X and Y ^^ are inverted here, god knows why
-            System.out.println("pos x of move: " + posXofMove); //X of where you want to go
-            System.out.println("pos y of move: " + posYofMove); //Y of where you want to go
-            System.out.println(posXofMove-piece.getPosY());
-            System.out.println(piece.getPosX()-posYofMove);
-            System.out.println(board[posYofMove][posXofMove].getType()); //the type of piece on the place you want to go*/
             //if its filler and goes forward and is on the right side of the board
             if(board[posYofMove][posXofMove].getType()=='l' && piece.getPosX()-posYofMove==2 && piece.getPosY()-posXofMove==1){
-                System.out.println("left up 8");
                 isLegal=true;
             }
             //if its filler and goes right
@@ -153,7 +147,6 @@ public class Piece {
             }
             //if its filler and goes left
             else if(board[posYofMove][posXofMove].getType()=='l' && posXofMove-piece.getPosY()==-2 && piece.getPosX()-posYofMove==1){
-                System.out.println("left up 2");
                 isLegal=true;
             }
             //if its filler and goes right back
@@ -176,7 +169,6 @@ public class Piece {
             }
             //if takes and goes left
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && posXofMove-piece.getPosY()==-2 && piece.getPosX()-posYofMove==1){
-                System.out.println("left up 6");;
                 isLegal=true;
                 board[0][0].setLastTaken(board[posYofMove][posXofMove]);;
             }
@@ -187,7 +179,6 @@ public class Piece {
             }
             //if its filler and goes forward and is on the left side of the board
             else if(board[posYofMove][posXofMove].getType()=='l' && piece.getPosX()-posYofMove==2 && posXofMove-piece.getPosY()==1){
-                System.out.println("left up 5");
                 isLegal=true;
             }
             //if its filler and goes backwards and knight is on left side of the board
@@ -200,13 +191,11 @@ public class Piece {
             }
             //if takes and forward and knight is on right side of board
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && piece.getPosX()-posYofMove==2 && piece.getPosY()-posXofMove==1){
-                System.out.println("left up 2");
                 isLegal=true;
                 board[0][0].setLastTaken(board[posYofMove][posXofMove]);
             }
             //if takes and forward and knight is on left side of board
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && piece.getPosX()-posYofMove==2 && posXofMove-piece.getPosY()==1){
-                System.out.println("left up 4");
                 isLegal=true;
                 board[0][0].setLastTaken(board[posYofMove][posXofMove]);
             }

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ChessJavaFX extends Application {
     private boolean didTell=false;
@@ -36,9 +37,93 @@ public class ChessJavaFX extends Application {
     private GridPane tiles[][] = new GridPane[8][8];
     int XofPiece=0, YofPiece=0;
     Piece LastTaken;
-
     Piece piece = board[0][0];
+    public void updateBoard(){
+        for(int i=0; i<8; i++){
+            for(int j=0; j<8;j++){
+                GridPane tile = new GridPane(j,i);
+                tile.setTranslateX(j * 75);
+                tile.setTranslateY(i * 75);
+                root.getChildren().add(tile);
+                tiles[i][j] = tile;
+                give_image(tiles,board,i,j);
+                color_tiles(tiles,i,j);
+            }
+        }
+    }
+    public void color_tile(GridPane tiles[][],int i,int j){
+        tiles[i][j].setBackground((new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY))));
+    }
+    public void color_legal_moves(Piece piece, Piece[][] board){
+        ArrayList<String> tilesToColor = new ArrayList<String>();
+        if(piece.getType()=='P' && piece.getColor()==true){
+            //takes left
+            if(board[piece.getPosY()-1][piece.getPosX()-1].getType()!='l' && board[piece.getPosY()-1][piece.getPosX()-1].getColor()!=piece.getColor() && board[piece.getPosY()-1][piece.getPosX()-1].getPosX()-piece.getPosY()==1){
+                int x = piece.getPosY()-1;
+                int y = piece.getPosX()-1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+            //takes right
+            if(board[piece.getPosY()-1][piece.getPosX()+1].getType()!='l' && board[piece.getPosY()-1][piece.getPosX()+1].getColor()!=piece.getColor() && board[piece.getPosY()-1][piece.getPosX()+1].getPosX()-piece.getPosY()==1){
+                int x = piece.getPosY()+1;
+                int y = piece.getPosX()-1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+            //goes forward 2 squares
+            if(!piece.isDidMove()){
+                int x = piece.getPosY();
+                int y = piece.getPosX()-1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                y = piece.getPosX()-2;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+            //goes forward 1 square
+            else{
+                int x = piece.getPosY();
+                int y = piece.getPosX()-1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+        }
+        else if(piece.getType()=='P' && piece.getColor()==false){
+            //if takes right
+            if(board[piece.getPosY()+1][piece.getPosX()-1].getType()!='l' && board[piece.getPosY()+1][piece.getPosX()-1].getColor()!=piece.getColor() && board[piece.getPosY()+1][piece.getPosX()-1].getPosX()-piece.getPosX()==1){
+                int x = piece.getPosY()-1;
+                int y = piece.getPosX()+1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+            //takes right
+            if(board[piece.getPosY()+1][piece.getPosX()+1].getType()!='l' && board[piece.getPosY()+1][piece.getPosX()+1].getColor()!=piece.getColor() && board[piece.getPosY()+1][piece.getPosX()+1].getPosX()-piece.getPosX()==1 ){
+                int x = piece.getPosY()+1;
+                int y = piece.getPosX()+1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+            if(!piece.isDidMove()){
+                int x = piece.getPosY();
+                int y = piece.getPosX()+1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                y = piece.getPosX()+2;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+            else{
+                int x = piece.getPosY();
+                int y = piece.getPosX()+1;
+                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            }
+        }
+        if(piece.getType()=='N'){
 
+        }
+        for (int k=0; k < tilesToColor.size(); k++){
+            char y = tilesToColor.get(k).charAt(0);
+            char x = tilesToColor.get(k).charAt(1);
+            String y2 = String.valueOf(y);
+            String x2 = String.valueOf(x);
+            int y3 = Integer.parseInt(y2);
+            int x3 = Integer.parseInt(x2);
+            color_tile(tiles,y3,x3);
+        }
+        tilesToColor.clear();
+    }
     public static void color_tiles(GridPane tiles[][],int i,int j){
                 int kot = j+1;
                 int pies = i+1;
@@ -49,8 +134,6 @@ public class ChessJavaFX extends Application {
                     tiles[i][j].setBackground((new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY))));
                 }
             }
-
-
     public static void fill_board(Piece board[][]){
         for (int i = 0; i < board.length; i++)
         {
@@ -211,11 +294,11 @@ public class ChessJavaFX extends Application {
                 }
                 if(e.getButton()== MouseButton.PRIMARY && playable){
                     if(playable && !isPieceSelected && !isMoveSelected && board[this.getY()][this.getX()].getType()!='l' && board[this.getY()][this.getX()].getColor()==turn){
-                        this.setBackground((new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY))));
                         XofPiece = this.getX();
                         YofPiece = this.getY();
                         piece = board[YofPiece][XofPiece];
                         isPieceSelected=true;
+                        color_legal_moves(piece,board);
                     }
                     else if(playable && isPieceSelected && !isMoveSelected ){
                         int XofTarget = this.getX();
@@ -224,17 +307,7 @@ public class ChessJavaFX extends Application {
                         isPieceSelected = false;
                         isMoveSelected = false;
                         LastTaken = board[0][0].getLastTaken();
-                        for(int i=0; i<8; i++){
-                            for(int j=0; j<8;j++){
-                                GridPane tile = new GridPane(j,i);
-                                tile.setTranslateX(j * 75);
-                                tile.setTranslateY(i * 75);
-                                root.getChildren().add(tile);
-                                tiles[i][j] = tile;
-                                give_image(tiles,board,i,j);
-                                color_tiles(tiles,i,j);
-                            }
-                        }
+                        updateBoard();
                         if(turn) turn = false;
                         else turn = true;
                     }
