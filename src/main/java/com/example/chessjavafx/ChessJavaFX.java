@@ -23,15 +23,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ChessJavaFX extends Application {
+    private boolean didTell=false;
     private boolean turn=true;
     private boolean isPieceSelected=false;
     private boolean isMoveSelected=false;
+    private boolean playable = true;
+    private String winner;
     private Pane root = new Pane();
     private int y = 8;
     private int x = 8;
     private Piece board[][] = new Piece[8][8];
     private GridPane tiles[][] = new GridPane[8][8];
     int XofPiece=0, YofPiece=0;
+    Piece LastTaken;
 
     Piece piece = board[0][0];
 
@@ -164,9 +168,10 @@ public class ChessJavaFX extends Application {
     }
     @Override
     public void start(Stage stage){
-        System.out.println("pies");
         fill_board(board);
         add_pieces(board);
+        board[0][0].setLastTaken(new Piece('l',false,0,0,true));
+        LastTaken = board[0][0].getLastTaken();
         stage.setScene(new Scene(createContext()));
         stage.show();
     }
@@ -190,29 +195,35 @@ public class ChessJavaFX extends Application {
 
             getChildren().addAll(border, text);
 
-
             setOnMouseClicked(e -> {
-                if(e.getButton()== MouseButton.PRIMARY){
-                    if(!isPieceSelected && !isMoveSelected && board[this.getY()][this.getX()].getType()!='l' && board[this.getY()][this.getX()].getColor()==turn){
+                if(LastTaken==null){
+                    board[0][0].setLastTaken(new Piece('l',false,0,0,true));
+                    LastTaken = board[0][0].getLastTaken();
+                }
+                else if(LastTaken.getType()=='K'){
+                    if(LastTaken.getColor()==true){
+                        winner = "Black";
+                    }
+                    else if(LastTaken.getColor()==false){
+                        winner = "White";
+                    }
+                    playable = false;
+                }
+                if(e.getButton()== MouseButton.PRIMARY && playable){
+                    if(playable && !isPieceSelected && !isMoveSelected && board[this.getY()][this.getX()].getType()!='l' && board[this.getY()][this.getX()].getColor()==turn){
                         this.setBackground((new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY))));
                         XofPiece = this.getX();
                         YofPiece = this.getY();
-                        System.out.println("X of piece: " + XofPiece);
-                        System.out.println("Y of piece: " + YofPiece);
                         piece = board[YofPiece][XofPiece];
                         isPieceSelected=true;
                     }
-                    else if(isPieceSelected && !isMoveSelected ){
+                    else if(playable && isPieceSelected && !isMoveSelected ){
                         int XofTarget = this.getX();
                         int YofTarget = this.getY();
-                        System.out.println("X of target: " + XofTarget);
-                        System.out.println("Y of target: " + YofTarget);
-                        System.out.println("your piece: " + board[YofPiece][XofPiece]);
-                        System.out.println("target square before: " + board[YofTarget][XofTarget]);
-                        board[YofTarget][XofTarget] = piece;
-                        board[YofPiece][XofPiece] = new Piece('l',false,YofPiece,XofPiece,true);
+                        piece.move_piece(piece, XofTarget,YofTarget,turn,board);
                         isPieceSelected = false;
                         isMoveSelected = false;
+                        LastTaken = board[0][0].getLastTaken();
                         for(int i=0; i<8; i++){
                             for(int j=0; j<8;j++){
                                 GridPane tile = new GridPane(j,i);
@@ -224,7 +235,6 @@ public class ChessJavaFX extends Application {
                                 color_tiles(tiles,i,j);
                             }
                         }
-                        System.out.println("target square after: " + board[YofTarget][XofTarget]);
                         if(turn) turn = false;
                         else turn = true;
                     }
@@ -238,6 +248,10 @@ public class ChessJavaFX extends Application {
                             color_tiles(tiles,i,j);
                         }
                     }
+                }
+                else if(!playable && !didTell){
+                    System.out.println("The game has ended! " + winner + " won");
+                    didTell=true;
                 }
             });
         }
