@@ -58,13 +58,13 @@ public class ChessJavaFX extends Application {
         ArrayList<String> tilesToColor = new ArrayList<String>();
         if(piece.getType()=='P' && piece.getColor()==true){
             //takes left
-            if(board[piece.getPosY()-1][piece.getPosX()-1].getType()!='l' && board[piece.getPosY()-1][piece.getPosX()-1].getColor()!=piece.getColor() && board[piece.getPosY()-1][piece.getPosX()-1].getPosX()-piece.getPosY()==1){
+            if(board[0][0].check_legal(piece,board,piece.getPosY()-1,piece.getPosX()-1)){
                 int x = piece.getPosY()-1;
                 int y = piece.getPosX()-1;
                 tilesToColor.add(Integer.toString(y) + Integer.toString(x));
             }
             //takes right
-            if(board[piece.getPosY()-1][piece.getPosX()+1].getType()!='l' && board[piece.getPosY()-1][piece.getPosX()+1].getColor()!=piece.getColor() && board[piece.getPosY()-1][piece.getPosX()+1].getPosX()-piece.getPosY()==1){
+            if(board[0][0].check_legal(piece,board, piece.getPosY()+1,piece.getPosX()-1)){
                 int x = piece.getPosY()+1;
                 int y = piece.getPosX()-1;
                 tilesToColor.add(Integer.toString(y) + Integer.toString(x));
@@ -73,45 +73,143 @@ public class ChessJavaFX extends Application {
             if(!piece.isDidMove()){
                 int x = piece.getPosY();
                 int y = piece.getPosX()-1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
-                y = piece.getPosX()-2;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                if(board[0][0].check_legal(piece, board, x,y)) {
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                    y = piece.getPosX()-2;
+                    if(board[0][0].check_legal(piece, board, x,y)){
+                        tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                    }
+                }
             }
             //goes forward 1 square
             else{
                 int x = piece.getPosY();
                 int y = piece.getPosX()-1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                if(board[0][0].check_legal(piece, board, x,y)) {
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
             }
         }
         else if(piece.getType()=='P' && piece.getColor()==false){
-            //if takes right
-            if(board[piece.getPosY()+1][piece.getPosX()-1].getType()!='l' && board[piece.getPosY()+1][piece.getPosX()-1].getColor()!=piece.getColor() && board[piece.getPosY()+1][piece.getPosX()-1].getPosX()-piece.getPosX()==1){
-                int x = piece.getPosY()-1;
-                int y = piece.getPosX()+1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            //if takes left
+            if(piece.getPosY()-1 > 0 && piece.getPosX()+1 < 8){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()-1,piece.getPosX()+1)){
+                    int x = piece.getPosY()-1;
+                    int y = piece.getPosX()+1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
             }
             //takes right
-            if(board[piece.getPosY()+1][piece.getPosX()+1].getType()!='l' && board[piece.getPosY()+1][piece.getPosX()+1].getColor()!=piece.getColor() && board[piece.getPosY()+1][piece.getPosX()+1].getPosX()-piece.getPosX()==1 ){
-                int x = piece.getPosY()+1;
-                int y = piece.getPosX()+1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            if(piece.getPosY()+1 < 8 && piece.getPosX()+1 < 8){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()+1,piece.getPosX()+1)){
+                    int x = piece.getPosY()+1;
+                    int y = piece.getPosX()+1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
             }
             if(!piece.isDidMove()){
                 int x = piece.getPosY();
                 int y = piece.getPosX()+1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
-                y = piece.getPosX()+2;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                if(board[0][0].check_legal(piece, board, x,y)) {
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                    y = piece.getPosX()+2;
+                    if(board[0][0].check_legal(piece, board, x,y)){
+                        tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                    }
+                }
             }
             else{
                 int x = piece.getPosY();
                 int y = piece.getPosX()+1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                if(board[0][0].check_legal(piece, board, x,y)) {
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
             }
         }
         if(piece.getType()=='N'){
-
+            //right up
+            if(piece.getPosY()+1 < 8 && piece.getPosX()-2 >= 0){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()+1,piece.getPosX()-2)){
+                    int x = piece.getPosY()+1;
+                    int y = piece.getPosX()-2;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+            //left up
+            if(piece.getPosY()-1 >= 0 && piece.getPosX()-2 >= 0){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()-1,piece.getPosX()-2)){
+                    int x = piece.getPosY()-1;
+                    int y = piece.getPosX()-2;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+            //right sideways up
+            if(piece.getPosY()+2 < 8 && piece.getPosX()-1 >= 0){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()+2,piece.getPosX()-1)){
+                    int x = piece.getPosY()+2;
+                    int y = piece.getPosX()-1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+            //left sideways up
+            if(piece.getPosY()-2 >= 0 && piece.getPosX()-1 >= 0){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()-2,piece.getPosX()-1)){
+                    int x = piece.getPosY()-2;
+                    int y = piece.getPosX()-1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+            //right down
+            if(piece.getPosY()+1 < 8 && piece.getPosX()+2 < 8){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()+1,piece.getPosX()+2)){
+                    int x = piece.getPosY()+1;
+                    int y = piece.getPosX()+2;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+            //left down
+            if(piece.getPosY()-1 >= 0 && piece.getPosX()+2 < 8){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()-1,piece.getPosX()+2)){
+                    int x = piece.getPosY()-1;
+                    int y = piece.getPosX()+2;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+            //right sideways down
+            if(piece.getPosY()+2 < 8 && piece.getPosX()+1 < 8){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()+2,piece.getPosX()+1)){
+                    int x = piece.getPosY()+2;
+                    int y = piece.getPosX()+1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+            //left sideways down
+            if(piece.getPosY()-2 >= 0 && piece.getPosX()+1 < 8){
+                if(board[0][0].check_legal(piece, board, piece.getPosY()-2,piece.getPosX()+1)){
+                    int x = piece.getPosY()-2;
+                    int y = piece.getPosX()+1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
+            }
+        }
+        if(piece.getType()=='B'){
+            //colors right up legal moves
+            int i = 1;
+            int j = 1;
+            while(j!=7 && i!=7){
+                //X
+                int kot = piece.getPosY()-j;
+                //Y
+                int pies = piece.getPosX()-i;
+                if(pies >= 0 && kot >= 0){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
         }
         for (int k=0; k < tilesToColor.size(); k++){
             char y = tilesToColor.get(k).charAt(0);
@@ -125,15 +223,15 @@ public class ChessJavaFX extends Application {
         tilesToColor.clear();
     }
     public static void color_tiles(GridPane tiles[][],int i,int j){
-                int kot = j+1;
-                int pies = i+1;
-                if(!((kot%2!=0 && pies%2!=0) || (kot%2==0 && pies%2==0))){
-                    tiles[i][j].setBackground((new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY))));
-                }
-                else{
-                    tiles[i][j].setBackground((new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY))));
-                }
-            }
+        int kot = j+1;
+        int pies = i+1;
+        if(!((kot%2!=0 && pies%2!=0) || (kot%2==0 && pies%2==0))){
+            tiles[i][j].setBackground((new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY))));
+        }
+        else{
+            tiles[i][j].setBackground((new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY))));
+        }
+    }
     public static void fill_board(Piece board[][]){
         for (int i = 0; i < board.length; i++)
         {
@@ -172,30 +270,41 @@ public class ChessJavaFX extends Application {
 
     }
     public void give_image(GridPane tiles2[][], Piece board[][], int i, int j) {
-        String path = "C:\\Users\\kubab\\chess-javaFX\\src\\main\\java\\com\\example\\chessjavafx\\pieces\\";
-        Image image = new Image(path + "WPawn.png");
+        File file = new File("pieces\\WPawn.png");
+        Image image = new Image(file.getAbsolutePath());
         ImageView WPawn = new ImageView(image);
-        image = new Image(path + "BPawn.png");
+        file = new File("pieces\\BPawn.png");
+        image = new Image(file.getAbsolutePath());
         ImageView BPawn = new ImageView(image);
-        image = new Image(path + "WRook.png");
+        file = new File("pieces\\WRook.png");
+        image = new Image(file.getAbsolutePath());
         ImageView WRook = new ImageView(image);
-        image = new Image(path + "BRook.png");
+        file = new File("pieces\\BRook.png");
+        image = new Image(file.getAbsolutePath());
         ImageView BRook = new ImageView(image);
-        image = new Image(path + "WBishop.png");
+        file = new File("pieces\\WBishop.png");
+        image = new Image(file.getAbsolutePath());
         ImageView WBishop = new ImageView(image);
-        image = new Image(path + "BBishop.png");
+        file = new File("pieces\\BBishop.png");
+        image = new Image(file.getAbsolutePath());
         ImageView BBishop = new ImageView(image);
-        image = new Image(path + "WKnight.png");
+        file = new File("pieces\\WKnight.png");
+        image = new Image(file.getAbsolutePath());
         ImageView WKnight = new ImageView(image);
-        image = new Image(path + "BKnight.png");
+        file = new File("pieces\\BKnight.png");
+        image = new Image(file.getAbsolutePath());
         ImageView BKnight = new ImageView(image);
-        image = new Image(path + "WQueen.png");
+        file = new File("pieces\\WQueen.png");
+        image = new Image(file.getAbsolutePath());
         ImageView WQueen = new ImageView(image);
-        image = new Image(path + "BQueen.png");
+        file = new File("pieces\\BQueen.png");
+        image = new Image(file.getAbsolutePath());
         ImageView BQueen = new ImageView(image);
-        image = new Image(path + "BKing.png");
+        file = new File("pieces\\BKing.png");
+        image = new Image(file.getAbsolutePath());
         ImageView BKing = new ImageView(image);
-        image = new Image(path + "WKing.png");
+        file = new File("pieces\\WKing.png");
+        image = new Image(file.getAbsolutePath());
         ImageView WKing = new ImageView(image);
         if(board[i][j].getType()=='P' && board[i][j].getColor()){
             tiles2[i][j].getChildren().add(WPawn);

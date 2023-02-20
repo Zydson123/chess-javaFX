@@ -144,6 +144,7 @@ public class Piece {
             }
             //if its filler and goes right
             else if(board[posYofMove][posXofMove].getType()=='l' && posXofMove-piece.getPosY()==2 && piece.getPosX()-posYofMove==1){
+                isLegal=true;
             }
             //if its filler and goes left
             else if(board[posYofMove][posXofMove].getType()=='l' && posXofMove-piece.getPosY()==-2 && piece.getPosX()-posYofMove==1){
@@ -355,7 +356,7 @@ public class Piece {
                 int kot = piece.getPosY()+j;
                 //Y
                 int pies = piece.getPosX()-i;
-                if(!(pies<0) && !(kot>=8)){
+                if((pies > 0) && kot < 8){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
                         this.seenRightUpPieces.add(board[pies][kot]);
@@ -364,12 +365,14 @@ public class Piece {
                 j++;
                 i++;
             }
+            i = 1;
+            j = 1;
             while(j!=7 && i!=7){
                 //X
                 int kot = piece.getPosY()-j;
                 //Y
                 int pies = piece.getPosX()-i;
-                if(!(pies<0) && !(kot<0)){
+                if(pies >= 0 && kot >= 0){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
                         this.seenLeftUpPieces.add(board[pies][kot]);
@@ -387,7 +390,7 @@ public class Piece {
                 //Y
                 int pies = piece.getPosX()+i;
                 //Again, I have no idea why these are inverted when you put them in. Goofy ahh language
-                if(!(pies>=8) && !(kot>=8)){
+                if(pies < 8 && kot < 8){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
                         this.seenRightDownPieces.add(board[pies][kot]);
@@ -403,7 +406,7 @@ public class Piece {
                 int kot = piece.getPosY()-j;
                 //Y
                 int pies = piece.getPosX()+i;
-                if(!(pies>=8) && !(kot<0)){
+                if((pies < 8) && (kot >= 0)){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
                         this.seenLeftDownPieces.add(board[pies][kot]);
@@ -412,12 +415,16 @@ public class Piece {
                 j++;
                 i++;
             }
+            System.out.println("seenLeftUpPieces: " + this.seenLeftUpPieces);
+            System.out.println("seenRightUpPieces: " + this.seenRightUpPieces);
+            System.out.println("seenRightDownPieces: " + this.seenRightDownPieces);
+            System.out.println("seenLeftDownPieces: " + this.seenLeftDownPieces);
             while(j!=7 && i!=7){
                 //X
                 int kot = piece.getPosY()+j;
                 //Y
                 int pies = piece.getPosX()-i;
-                if(!(pies<0) && !(kot>=8)){
+                if((pies >= 0) && (kot < 8)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
                         this.blockades.add(board[pies][kot]);
@@ -557,9 +564,9 @@ public class Piece {
             //if goes left up and no blockade
             else if(
                     board[posYofMove][posXofMove].getType()=='l'
-                    && (piece.getPosY()-posXofMove > 0)
-                    && (piece.getPosX()-posYofMove > 0)
-                    && this.seenLeftUpPieces.contains(board[posYofMove][posXofMove])
+                            && (piece.getPosY()-posXofMove > 0)
+                            && (piece.getPosX()-posYofMove > 0)
+                            && this.seenLeftUpPieces.contains(board[posYofMove][posXofMove])
             ){
                 System.out.println("left up legal");
                 isLegal = true;
@@ -577,9 +584,9 @@ public class Piece {
             //if goes right down and no blockade bishop
             else if(
                     board[posYofMove][posXofMove].getType()=='l'
-                    && piece.getPosY()-posXofMove < 0
-                    && piece.getPosX()-posYofMove < 0
-                    && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
+                            && piece.getPosY()-posXofMove < 0
+                            && piece.getPosX()-posYofMove < 0
+                            && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 System.out.println("right down legal");
                 isLegal = true;
@@ -610,10 +617,10 @@ public class Piece {
             //if goes left down and no blockade and takes
             else if(
                     board[posYofMove][posXofMove].getType()!='l'
-                    && board[posYofMove][posXofMove].getColor()!=piece.getColor()
-                    && piece.getPosY()-posXofMove > 0
-                    && piece.getPosX()-posYofMove < 0
-                    && this.seenLeftDownPieces.contains(board[posYofMove][posXofMove])
+                            && board[posYofMove][posXofMove].getColor()!=piece.getColor()
+                            && piece.getPosY()-posXofMove > 0
+                            && piece.getPosX()-posYofMove < 0
+                            && this.seenLeftDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 board[0][0].setLastTaken(board[posYofMove][posXofMove]);;
                 isLegal = true;
@@ -621,11 +628,11 @@ public class Piece {
             //if goes right down and no blockade and takes
             else if(
                     board[posYofMove][posXofMove].getType()!='l'
-                    && board[posYofMove][posXofMove].getColor()!=piece.getColor()
-                    && piece.getPosY()-posXofMove < 0
-                    && piece.getPosX()-posYofMove < 0
-                    && !(posXofMove-piece.getPosY()==1 && posYofMove-piece.getPosX()==2)
-                    && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
+                            && board[posYofMove][posXofMove].getColor()!=piece.getColor()
+                            && piece.getPosY()-posXofMove < 0
+                            && piece.getPosX()-posYofMove < 0
+                            && !(posXofMove-piece.getPosY()==1 && posYofMove-piece.getPosX()==2)
+                            && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 board[0][0].setLastTaken(board[posYofMove][posXofMove]);;
                 isLegal = true;
@@ -737,7 +744,7 @@ public class Piece {
                 int kot = piece.getPosY()-j;
                 //Y
                 int pies = piece.getPosX()+i;
-                    if(!(pies>=8) && !(kot<=0)){
+                if(!(pies>=8) && !(kot<=0)){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
                         this.seenLeftDownPieces.add(board[pies][kot]);
@@ -836,10 +843,10 @@ public class Piece {
             else{
                 LeftDownBlockade = this.blockades4.get(0);
             }
-            /*System.out.println("seenLeftUpPieces: " + this.seenLeftUpPieces);
+            System.out.println("seenLeftUpPieces: " + this.seenLeftUpPieces);
             System.out.println("seenRightUpPieces: " + this.seenRightUpPieces);
             System.out.println("seenRightDownPieces: " + this.seenRightDownPieces);
-            System.out.println("seenLeftDownPieces: " + this.seenLeftDownPieces);*/
+            System.out.println("seenLeftDownPieces: " + this.seenLeftDownPieces);
             //if goes right up BUT there is blockade
             if(
                     this.blockades.size()!=0
