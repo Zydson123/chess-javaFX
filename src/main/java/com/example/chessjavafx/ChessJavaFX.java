@@ -58,16 +58,20 @@ public class ChessJavaFX extends Application {
         ArrayList<String> tilesToColor = new ArrayList<String>();
         if(piece.getType()=='P' && piece.getColor()==true){
             //takes left
-            if(board[0][0].check_legal(piece,board,piece.getPosY()-1,piece.getPosX()-1)){
-                int x = piece.getPosY()-1;
-                int y = piece.getPosX()-1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            if(piece.getPosY()-1 >=0){
+                if(board[0][0].check_legal(piece,board,piece.getPosY()-1,piece.getPosX()-1)){
+                    int x = piece.getPosY()-1;
+                    int y = piece.getPosX()-1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
             }
             //takes right
-            if(board[0][0].check_legal(piece,board, piece.getPosY()+1,piece.getPosX()-1)){
-                int x = piece.getPosY()+1;
-                int y = piece.getPosX()-1;
-                tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+            if(piece.getPosY()+1 < 8){
+                if(board[0][0].check_legal(piece,board, piece.getPosY()+1,piece.getPosX()-1)){
+                    int x = piece.getPosY()+1;
+                    int y = piece.getPosX()-1;
+                    tilesToColor.add(Integer.toString(y) + Integer.toString(x));
+                }
             }
             //goes forward 2 squares
             if(!piece.isDidMove()){
@@ -193,13 +197,10 @@ public class ChessJavaFX extends Application {
             }
         }
         if(piece.getType()=='B'){
-            //colors right up legal moves
             int i = 1;
             int j = 1;
             while(j!=7 && i!=7){
-                //X
                 int kot = piece.getPosY()-j;
-                //Y
                 int pies = piece.getPosX()-i;
                 if(pies >= 0 && kot >= 0){
                     if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
@@ -209,6 +210,259 @@ public class ChessJavaFX extends Application {
                 }
                 j++;
                 i++;
+            }
+            i = 1;
+            j = 1;
+            while(j!=7 && i!=7){
+                int kot = piece.getPosY()+j;
+                int pies = piece.getPosX()-i;
+                if((pies >= 0) && kot < 8){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
+            i = 1;
+            j = 1;
+            while(j!=7 && i!=7){
+                int kot = piece.getPosY()+j;
+                int pies = piece.getPosX()+i;
+                if(pies < 8 && kot < 8){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
+            i = 1;
+            j = 1;
+            while(j!=7 && i!=7){
+                //X
+                int kot = piece.getPosY()-j;
+                //Y
+                int pies = piece.getPosX()+i;
+                if((pies < 8) && (kot >= 0)){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
+        }
+        if(piece.getType()=='R'){
+            int i,j;
+            i=1;
+            //right
+            while(i!=8){
+                int pies = piece.getPosY()+i;
+                if(pies < 8){
+                    if(!board[piece.getPosX()][pies].isUsed() && board[0][0].check_legal(piece, board, pies, piece.getPosX())){
+                        tilesToColor.add(Integer.toString(piece.getPosX()) + Integer.toString(pies));
+                    }
+                }
+                i++;
+            }
+            i=1;
+            //left
+            while(i!=8){
+                int pies = piece.getPosY()-i;
+                if(pies >= 0){
+                    if(!board[piece.getPosX()][pies].isUsed() && board[0][0].check_legal(piece, board, pies, piece.getPosX())){
+                        tilesToColor.add(Integer.toString(piece.getPosX()) + Integer.toString(pies));
+                    }
+                }
+                i++;
+            }
+            j=1;
+            //up
+            while(j!=8){
+                int kot = piece.getPosX()-j;
+                if(kot >= 0){
+                    if(!board[kot][piece.getPosY()].isUsed() && board[0][0].check_legal(piece, board, piece.getPosY(), kot)){
+                        tilesToColor.add(Integer.toString(kot) + Integer.toString(piece.getPosY()));
+                    }
+                }
+                j++;
+            }
+            j=1;
+            //down
+            while(j!=8){
+                int kot = piece.getPosX()+j;
+                if(kot < 8){
+                    if(!board[kot][piece.getPosY()].isUsed() && board[0][0].check_legal(piece, board, piece.getPosY(), kot)){
+                        tilesToColor.add(Integer.toString(kot) + Integer.toString(piece.getPosY()));
+                    }
+                }
+                j++;
+            }
+        }
+        if(piece.getType()=='Q'){
+            int i = 1;
+            int j = 1;
+            while(j!=7 && i!=7){
+                int kot = piece.getPosY()-j;
+                int pies = piece.getPosX()-i;
+                if(pies >= 0 && kot >= 0){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
+            i = 1;
+            j = 1;
+            while(j!=7 && i!=7){
+                int kot = piece.getPosY()+j;
+                int pies = piece.getPosX()-i;
+                if((pies >= 0) && kot < 8){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
+            i = 1;
+            j = 1;
+            while(j!=7 && i!=7){
+                int kot = piece.getPosY()+j;
+                int pies = piece.getPosX()+i;
+                if(pies < 8 && kot < 8){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
+            i = 1;
+            j = 1;
+            while(j!=7 && i!=7){
+                //X
+                int kot = piece.getPosY()-j;
+                //Y
+                int pies = piece.getPosX()+i;
+                if((pies < 8) && (kot >= 0)){
+                    if(!board[pies][kot].isUsed() && board[0][0].check_legal(piece, board,kot,pies))
+                    {
+                        tilesToColor.add(Integer.toString(pies) + Integer.toString(kot));
+                    }
+                }
+                j++;
+                i++;
+            }
+            i=1;
+            //right
+            while(i!=8){
+                int pies = piece.getPosY()+i;
+                if(pies < 8){
+                    if(!board[piece.getPosX()][pies].isUsed() && board[0][0].check_legal(piece, board, pies, piece.getPosX())){
+                        tilesToColor.add(Integer.toString(piece.getPosX()) + Integer.toString(pies));
+                    }
+                }
+                i++;
+            }
+            i=1;
+            //left
+            while(i!=8){
+                int pies = piece.getPosY()-i;
+                if(pies >= 0){
+                    if(!board[piece.getPosX()][pies].isUsed() && board[0][0].check_legal(piece, board, pies, piece.getPosX())){
+                        tilesToColor.add(Integer.toString(piece.getPosX()) + Integer.toString(pies));
+                    }
+                }
+                i++;
+            }
+            j=1;
+            //up
+            while(j!=8){
+                int kot = piece.getPosX()-j;
+                if(kot >= 0){
+                    if(!board[kot][piece.getPosY()].isUsed() && board[0][0].check_legal(piece, board, piece.getPosY(), kot)){
+                        tilesToColor.add(Integer.toString(kot) + Integer.toString(piece.getPosY()));
+                    }
+                }
+                j++;
+            }
+            j=1;
+            //down
+            while(j!=8){
+                int kot = piece.getPosX()+j;
+                if(kot < 8){
+                    if(!board[kot][piece.getPosY()].isUsed() && board[0][0].check_legal(piece, board, piece.getPosY(), kot)){
+                        tilesToColor.add(Integer.toString(kot) + Integer.toString(piece.getPosY()));
+                    }
+                }
+                j++;
+            }
+        }
+        if(piece.getType()=='K'){
+            int pies = piece.getPosY()+1;
+            int kot = piece.getPosX()+1;
+            if(pies != 8 && kot != 8){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY()+1;
+            kot = piece.getPosX()-1;
+            if(pies != 8 && kot >= 0){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY()-1;
+            kot = piece.getPosX()-1;
+            if(pies >= 0 && kot >= 0){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY()-1;
+            kot = piece.getPosX()+1;
+            if(pies >= 0 && kot != 8){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY()-1;
+            kot = piece.getPosX();
+            if(pies >= 0){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY()+1;
+            kot = piece.getPosX();
+            if(pies != 8){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY();
+            kot = piece.getPosX()-1;
+            if(kot >= 0){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY();
+            kot = piece.getPosX()+1;
+            if(kot != 8){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
             }
         }
         for (int k=0; k < tilesToColor.size(); k++){
