@@ -38,6 +38,8 @@ public class ChessJavaFX extends Application {
     int XofPiece=0, YofPiece=0;
     Piece LastTaken;
     Piece piece = board[0][0];
+    boolean isKingInCheck = false;
+
     public void updateBoard(){
         for(int i=0; i<8; i++){
             for(int j=0; j<8;j++){
@@ -58,7 +60,7 @@ public class ChessJavaFX extends Application {
         ArrayList<String> tilesToColor = new ArrayList<String>();
         if(piece.getType()=='P' && piece.getColor()==true){
             //takes left
-            if(piece.getPosY()-1 >=0){
+            if(piece.getPosY()-1 >= 0){
                 if(board[0][0].check_legal(piece,board,piece.getPosY()-1,piece.getPosX()-1)){
                     int x = piece.getPosY()-1;
                     int y = piece.getPosX()-1;
@@ -450,6 +452,20 @@ public class ChessJavaFX extends Application {
                     tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
                 }
             }
+            pies = piece.getPosY()+2;
+            kot = piece.getPosX();
+            if(pies < 8){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
+            pies = piece.getPosY()-2;
+            kot = piece.getPosX();
+            if(pies >= 0){
+                if(board[0][0].check_legal(piece,board,pies,kot)){
+                    tilesToColor.add(Integer.toString(kot) + Integer.toString(pies));
+                }
+            }
             pies = piece.getPosY();
             kot = piece.getPosX()-1;
             if(kot >= 0){
@@ -599,17 +615,7 @@ public class ChessJavaFX extends Application {
     }
     private Parent createContext() {
         root.setPrefSize(600, 600);
-        for (int i = 0; i < y; i++) {
-            for (int j = 0; j < x; j++) {
-                GridPane tile = new GridPane(j,i);
-                tile.setTranslateX(j * 75);
-                tile.setTranslateY(i * 75);
-                root.getChildren().add(tile);
-                tiles[i][j] = tile;
-                give_image(tiles, board,i,j);
-                color_tiles(tiles,i,j);
-            }
-        }
+        updateBoard();
         return root;
     }
     @Override
@@ -662,17 +668,32 @@ public class ChessJavaFX extends Application {
                         piece = board[YofPiece][XofPiece];
                         isPieceSelected=true;
                         color_legal_moves(piece,board);
+                        if(turn){
+                            isKingInCheck = piece.isKingAttacked(board[0][0].findWhiteKing(board),board);
+                            if(isKingInCheck){
+                                System.out.println("The white king is in check! Get him out of danger");
+                            }
+                        }
+                        else{
+                            isKingInCheck = piece.isKingAttacked(board[0][0].findBlackKing(board),board);
+                            if(isKingInCheck){
+                                System.out.println("The black king is in check! Get him out of danger");
+                            }
+                        }
                     }
                     else if(playable && isPieceSelected && !isMoveSelected ){
                         int XofTarget = this.getX();
                         int YofTarget = this.getY();
-                        piece.move_piece(piece, XofTarget,YofTarget,turn,board);
+                        if(board[0][0].check_legal(piece, board, XofTarget, YofTarget)){
+                            piece.move_piece(piece, XofTarget,YofTarget,turn,board);
+                            LastTaken = board[0][0].getLastTaken();
+                            if(turn) turn = false;
+                            else turn = true;
+                        }
+                        piece = null;
                         isPieceSelected = false;
                         isMoveSelected = false;
-                        LastTaken = board[0][0].getLastTaken();
                         updateBoard();
-                        if(turn) turn = false;
-                        else turn = true;
                     }
                 }
                 else if(e.getButton() == MouseButton.SECONDARY){
