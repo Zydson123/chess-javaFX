@@ -39,11 +39,11 @@ public class ChessJavaFX extends Application {
     private ArrayList<String> tilesToColor = new ArrayList<String>();
     private ArrayList<String> legalMoves = new ArrayList<String>();
     int XofPiece=0, YofPiece=0;
-    Piece LastTaken;
     Piece piece = board[0][0];
     boolean isKingInCheck = false;
 
     public void updateBoard(){
+        root.getChildren().clear();
         for(int i=0; i<8; i++){
             for(int j=0; j<8;j++){
                 GridPane tile = new GridPane(j,i);
@@ -629,8 +629,6 @@ public class ChessJavaFX extends Application {
     public void start(Stage stage){
         fill_board(board);
         add_pieces(board);
-        board[0][0].setLastTaken(new Piece('l',false,0,0,true));
-        LastTaken = board[0][0].getLastTaken();
         stage.setScene(new Scene(createContext()));
         stage.show();
     }
@@ -655,10 +653,6 @@ public class ChessJavaFX extends Application {
             getChildren().addAll(border, text);
 
             setOnMouseClicked(e -> {
-                if(LastTaken==null){
-                    board[0][0].setLastTaken(new Piece('l',false,0,0,true));
-                    LastTaken = board[0][0].getLastTaken();
-                }
                 if(e.getButton()== MouseButton.PRIMARY && playable){
                     if(playable && !isPieceSelected && !isMoveSelected && board[this.getY()][this.getX()].getType()!='l' && board[this.getY()][this.getX()].getColor()==turn){
                         if(legalMoves.size()!=0){
@@ -672,7 +666,6 @@ public class ChessJavaFX extends Application {
                         }
                         Cloner cloner = new Cloner();
                         legalMoves = cloner.deepClone(tilesToColor);
-                        System.out.println(legalMoves);
                         tilesToColor.clear();
                         XofPiece = this.getX();
                         YofPiece = this.getY();
@@ -714,7 +707,6 @@ public class ChessJavaFX extends Application {
                         int YofTarget = this.getY();
                         if(board[0][0].check_legal(piece, board, XofTarget, YofTarget, turn)){
                             piece.move_piece(piece, XofTarget,YofTarget,turn,board, turn);
-                            LastTaken = board[0][0].getLastTaken();
                             if(turn) turn = false;
                             else turn = true;
                         }
