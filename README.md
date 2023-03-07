@@ -10,5 +10,5 @@ W.I.P Features <br>
 </ul> 
 <br>
 Libraries I used to make my life better: <br>
-<a href="https://github.com/kostaskougios/cloning">Cloner - to clone my board to check for illegal moves</a>
+<a href="https://github.com/kostaskougios/cloning">Cloner - to clone my board to check for illegal moves</a><br>
 <a href="https://github.com/easymock/objenesis">Objensis - to help Cloner</a>
