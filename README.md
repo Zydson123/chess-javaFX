@@ -8,3 +8,7 @@ W.I.P Features <br>
   <li>Time Control</li>
   <li> Playing with a bot (stockfish) </li>
 </ul> 
+<br>
+Libraries I used to make my life better: <br>
+<a href="https://github.com/kostaskougios/cloning">Cloner - to clone my board to check for illegal moves</a>
+<a href="https://github.com/easymock/objenesis">Objensis - to help Cloner</a>
