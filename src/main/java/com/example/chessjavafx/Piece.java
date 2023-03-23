@@ -15,19 +15,6 @@ public class Piece {
     private boolean isFiller;
     private boolean didMove;
     private boolean isUsed;
-    private ArrayList<Piece> blockades = new ArrayList<Piece>();
-    private ArrayList<Piece> blockades2 = new ArrayList<Piece>();
-    private ArrayList<Piece> blockades3 = new ArrayList<Piece>();
-    private ArrayList<Piece> blockades4 = new ArrayList<Piece>();
-    private ArrayList<Piece> blockades5 = new ArrayList<Piece>();
-    private ArrayList<Piece> blockades6 = new ArrayList<Piece>();
-    private ArrayList<Piece> blockades7 = new ArrayList<Piece>();
-    private ArrayList<Piece> blockades8 = new ArrayList<Piece>();
-    ArrayList<Piece> seenLeftUpPieces = new ArrayList<Piece>();
-    ArrayList<Piece> seenRightUpPieces = new ArrayList<Piece>();
-    ArrayList<Piece> seenRightDownPieces = new ArrayList<Piece>();
-    ArrayList<Piece> seenLeftDownPieces = new ArrayList<Piece>();
-    ArrayList<Character> LegalPieces = new ArrayList<Character>();
     public Piece(char type, boolean color, int posX, int posY, boolean isFiller) {
         this.id++;
         this.type = type;
@@ -45,7 +32,7 @@ public class Piece {
     public void setType(char type) {
         this.type = type;
     }
-    public void move_piece(Piece piece, int posXofMove,int posYofMove, boolean whoseTurn, Piece board[][], boolean turn){
+    public static void move_piece(Piece piece, int posXofMove,int posYofMove, boolean whoseTurn, Piece board[][], boolean turn){
         if(piece.getColor()==whoseTurn) {
             if (board[posXofMove][posYofMove].check_legal(piece, board, posXofMove, posYofMove, turn)) {
                 board[piece.getPosX()][piece.getPosY()] = new Piece('l', false, piece.getPosX(), piece.getPosY(), true);
@@ -122,15 +109,6 @@ public class Piece {
     public boolean check_legal(Piece piece, Piece board[][],int posXofMove,int posYofMove, boolean turn){
         boolean isLegal=false;
         piece.setUsed(true);
-        this.blockades.clear();
-        this.blockades2.clear();
-        this.blockades3.clear();
-        this.blockades4.clear();
-        this.blockades5.clear();
-        this.blockades6.clear();
-        this.blockades7.clear();
-        this.blockades8.clear();
-
         if(piece.getType()=='P' && piece.getColor()==true){
             //go forward by two
             if(piece.getPosX()==6 && 6-posYofMove==2 && piece.getPosY()==posXofMove && board[posYofMove][posXofMove].getType()=='l'){
@@ -143,7 +121,7 @@ public class Piece {
             //takes right
             else if(piece.getPosX()-posYofMove==1 && board[posYofMove][posXofMove].getType()!='l' && piece.getPosY()-posXofMove==-1 && posXofMove!=piece.getPosY() && board[posYofMove][posXofMove].getColor()!=piece.getColor()){
                 isLegal = true;
-                
+
             }
             //takes left
             else if(piece.getPosX()-posYofMove==1 && board[posYofMove][posXofMove].getType()!='l' && piece.getPosY()-posXofMove==1 && posXofMove!=piece.getPosY() && board[posYofMove][posXofMove].getColor()!=piece.getColor()){
@@ -192,7 +170,7 @@ public class Piece {
             //if takes and goes right back
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && posXofMove-piece.getPosY()==2 && piece.getPosX()-posYofMove==-1){
                 isLegal=true;
-                
+
             }
             //if its filler and goes left back
             else if(board[posYofMove][posXofMove].getType()=='l' && posXofMove-piece.getPosY()==-2 && piece.getPosX()-posYofMove==-1){
@@ -228,31 +206,36 @@ public class Piece {
             //if takes and forward and knight is on right side of board
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && piece.getPosX()-posYofMove==2 && piece.getPosY()-posXofMove==1){
                 isLegal=true;
-                
+
             }
             //if takes and forward and knight is on left side of board
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && piece.getPosX()-posYofMove==2 && posXofMove-piece.getPosY()==1){
                 isLegal=true;
-                
+
             }
             //if takes and backwards and knight is on right side of the board
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && piece.getPosY()-posXofMove==1 && piece.getPosX()-posYofMove==2){
                 isLegal=true;
-                
+
             }
             //if takes and backwards and knight is on left side of the board
             else if(board[posYofMove][posXofMove].getType()!='l' && board[posYofMove][posXofMove].getColor()!=piece.getColor() && piece.getPosY()-posXofMove==1 && posYofMove-piece.getPosX()==2){
                 isLegal=true;
-                
+
             }
         }
         else if(piece.getType()=='R'){
+            ArrayList<Piece> blockades5 = new ArrayList<>();
+            ArrayList<Piece> blockades6 = new ArrayList<>();
+            ArrayList<Piece> blockades7 = new ArrayList<>();
+            ArrayList<Piece> blockades8 = new ArrayList<>();
+
             int i = 1;
             while(i!=8){
                 int pies = piece.getPosY()+i;
                 if(pies < 8){
                     if(!board[piece.getPosX()][pies].isUsed() && board[piece.getPosX()][pies].getType()!='l'){
-                        this.blockades5.add(board[piece.getPosX()][pies]);
+                        blockades5.add(board[piece.getPosX()][pies]);
                     }
                 }
                 i++;
@@ -262,7 +245,7 @@ public class Piece {
                 int kot = piece.getPosX()-j;
                 if(kot >= 0){
                     if(!board[kot][piece.getPosY()].isUsed() && board[kot][piece.getPosY()].getType()!='l'){
-                        this.blockades6.add(board[kot][piece.getPosY()]);
+                        blockades6.add(board[kot][piece.getPosY()]);
                     }
                 }
                 j++;
@@ -272,7 +255,7 @@ public class Piece {
                 int kot = piece.getPosX()+j;
                 if(kot < 8){
                     if(!board[kot][piece.getPosY()].isUsed() && board[kot][piece.getPosY()].getType()!='l'){
-                        this.blockades7.add(board[kot][piece.getPosY()]);
+                        blockades7.add(board[kot][piece.getPosY()]);
                     }
                 }
                 j++;
@@ -282,7 +265,7 @@ public class Piece {
                 int pies = piece.getPosY()-i;
                 if(pies >= 0){
                     if(!board[piece.getPosX()][pies].isUsed() && board[piece.getPosX()][pies].getType()!='l'){
-                        this.blockades8.add(board[piece.getPosX()][pies]);
+                        blockades8.add(board[piece.getPosX()][pies]);
                     }
                 }
                 i++;
@@ -293,41 +276,41 @@ public class Piece {
             Piece YblockadeFriendlyUp = board[0][0];
             Piece YblockadeFriendlyDown = board[0][0];
             Piece XblockadeFriendlyLeft = board[0][0];
-            if(this.blockades5.size()==0){
+            if(blockades5.size()==0){
 
             }
-            else if(this.blockades5.size()==1){
-                XblockadeFriendlyRight = this.blockades5.get(0);
+            else if(blockades5.size()==1){
+                XblockadeFriendlyRight = blockades5.get(0);
             }
             else{
-                XblockadeFriendlyRight = this.blockades5.get(0);
+                XblockadeFriendlyRight = blockades5.get(0);
             }
-            if(this.blockades6.size()==0){
+            if(blockades6.size()==0){
 
             }
-            else if(this.blockades6.size()==1){
-                YblockadeFriendlyUp = this.blockades6.get(0);
+            else if(blockades6.size()==1){
+                YblockadeFriendlyUp = blockades6.get(0);
             }
             else{
-                YblockadeFriendlyUp = this.blockades6.get(0);
+                YblockadeFriendlyUp = blockades6.get(0);
             }
-            if(this.blockades7.size()==0){
+            if(blockades7.size()==0){
 
             }
-            else if(this.blockades7.size()==1){
-                YblockadeFriendlyDown = this.blockades7.get(0);
+            else if(blockades7.size()==1){
+                YblockadeFriendlyDown = blockades7.get(0);
             }
             else{
-                YblockadeFriendlyDown = this.blockades7.get(0);
+                YblockadeFriendlyDown = blockades7.get(0);
             }
-            if(this.blockades8.size()==0){
+            if(blockades8.size()==0){
 
             }
-            else if(this.blockades8.size()==1){
-                XblockadeFriendlyLeft = this.blockades8.get(0);
+            else if(blockades8.size()==1){
+                XblockadeFriendlyLeft = blockades8.get(0);
             }
             else{
-                XblockadeFriendlyLeft = this.blockades8.get(0);
+                XblockadeFriendlyLeft = blockades8.get(0);
             }
             //if goes up and there is blockade
             if(
@@ -336,7 +319,7 @@ public class Piece {
                             && piece.getPosX() - posYofMove > 0
                             && posYofMove - YblockadeFriendlyUp.getPosX() < 0
                             && YblockadeFriendlyUp.getPosX() < piece.getPosX()
-                            && this.blockades6.size()!=0
+                            && blockades6.size()!=0
             )
             {
                 isLegal=false;
@@ -348,7 +331,7 @@ public class Piece {
                             && piece.getPosX() - posYofMove < 0
                             && posYofMove - YblockadeFriendlyDown.getPosX() > 0
                             && YblockadeFriendlyDown.getPosX() > piece.getPosX()
-                            && this.blockades7.size()!=0
+                            && blockades7.size()!=0
             )
             {
                 isLegal=false;
@@ -360,7 +343,7 @@ public class Piece {
                             && posXofMove - piece.getPosY() > 0
                             && posXofMove - XblockadeFriendlyRight.getPosY() > 0
                             && piece.getPosY() - XblockadeFriendlyRight.getPosY() < 0
-                            && this.blockades5.size()!=0
+                            && blockades5.size()!=0
             )
             {
                 isLegal=false;
@@ -373,7 +356,7 @@ public class Piece {
                             && posYofMove - XblockadeFriendlyLeft.getPosX() == 0
                             && XblockadeFriendlyLeft.getPosX() == piece.getPosX()
                             && posXofMove - XblockadeFriendlyLeft.getPosY() < 0
-                            && this.blockades8.size()!=0
+                            && blockades8.size()!=0
             )
             {
                 isLegal=false;
@@ -406,22 +389,30 @@ public class Piece {
             }
         }
         else if(piece.getType()=='B'){
+            ArrayList<Piece> seenLeftUpPieces = new ArrayList<>();
+            ArrayList<Piece> seenRightDownPieces = new ArrayList<>();
+            ArrayList<Piece> seenRightUpPieces = new ArrayList<>();
+            ArrayList<Piece> seenLeftDownPieces = new ArrayList<>();
+            ArrayList<Piece> blockades = new ArrayList<>();
+            ArrayList<Piece> blockades2 = new ArrayList<>();
+            ArrayList<Piece> blockades3 = new ArrayList<>();
+            ArrayList<Piece> blockades4 = new ArrayList<>();
             int i,j;
             Piece RightUpBlockade = null;
             Piece LeftUpBlockade = null;
             Piece RightDownBlockade = null;
             Piece LeftDownBlockade = null;
-            if(this.seenLeftUpPieces.size()!=0){
-                this.seenLeftUpPieces.clear();
+            if(seenLeftUpPieces.size()!=0){
+                seenLeftUpPieces.clear();
             }
-            if(this.seenRightDownPieces.size()!=0){
-                this.seenRightDownPieces.clear();
+            if(seenRightDownPieces.size()!=0){
+                seenRightDownPieces.clear();
             }
-            if(this.seenRightUpPieces.size()!=0){
-                this.seenRightUpPieces.clear();
+            if(seenRightUpPieces.size()!=0){
+                seenRightUpPieces.clear();
             }
-            if(this.seenLeftDownPieces.size()!=0){
-                this.seenLeftDownPieces.clear();
+            if(seenLeftDownPieces.size()!=0){
+                seenLeftDownPieces.clear();
             }
             i = 1;
             j = 1;
@@ -433,7 +424,7 @@ public class Piece {
                 if((pies >= 0) && kot < 8){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenRightUpPieces.add(board[pies][kot]);
+                        seenRightUpPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -449,7 +440,7 @@ public class Piece {
                 if(pies >= 0 && kot >= 0){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenLeftUpPieces.add(board[pies][kot]);
+                        seenLeftUpPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -467,7 +458,7 @@ public class Piece {
                 if(pies < 8 && kot < 8){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenRightDownPieces.add(board[pies][kot]);
+                        seenRightDownPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -483,7 +474,7 @@ public class Piece {
                 if((pies < 8) && (kot >= 0)){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenLeftDownPieces.add(board[pies][kot]);
+                        seenLeftDownPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -499,15 +490,15 @@ public class Piece {
                 if((pies >= 0) && (kot < 8)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades.add(board[pies][kot]);
+                        blockades.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
 
             }
-            if(this.blockades.size()!=0){
-                RightUpBlockade = this.blockades.get(0);
+            if(blockades.size()!=0){
+                RightUpBlockade = blockades.get(0);
 
             }
             i = 1;
@@ -520,14 +511,14 @@ public class Piece {
                 if(!(pies<0) && !(kot<0)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades2.add(board[pies][kot]);
+                        blockades2.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
             }
-            if(this.blockades2.size()!=0){
-                LeftUpBlockade = this.blockades2.get(0);
+            if(blockades2.size()!=0){
+                LeftUpBlockade = blockades2.get(0);
             }
             i = 1;
             j = 1;
@@ -540,15 +531,15 @@ public class Piece {
                 if(!(pies>=8) && !(kot>=8)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades3.add(board[pies][kot]);
+                        blockades3.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
 
             }
-            if(this.blockades3.size()!=0){
-                RightDownBlockade = this.blockades3.get(0);
+            if(blockades3.size()!=0){
+                RightDownBlockade = blockades3.get(0);
             }
             i = 1;
             j = 1;
@@ -560,19 +551,19 @@ public class Piece {
                 if(!(pies>=8) && !(kot<0)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades4.add(board[pies][kot]);
+                        blockades4.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
 
             }
-            if(this.blockades4.size()!=0){
-                LeftDownBlockade = this.blockades4.get(0);
+            if(blockades4.size()!=0){
+                LeftDownBlockade = blockades4.get(0);
             }
             //if goes right up BUT there is blockade
             if(
-                    this.blockades.size()!=0
+                    blockades.size()!=0
                             && RightUpBlockade.getPosY()-posXofMove < 0
                             && RightUpBlockade.getPosX()-posYofMove > 0
                             && piece.getPosY()-posXofMove < 0
@@ -582,7 +573,7 @@ public class Piece {
             }
             //if goes left up BUT there is blockade
             else if(
-                    this.blockades2.size()!=0
+                    blockades2.size()!=0
                             && LeftUpBlockade.getPosY()-posXofMove > 0
                             && LeftUpBlockade.getPosX()-posYofMove > 0
                             && LeftUpBlockade.getPosY()-piece.getPosY()<0
@@ -594,7 +585,7 @@ public class Piece {
             }
             //if goes right down BUT there is blockade
             else if(
-                    this.blockades3.size()!=0
+                    blockades3.size()!=0
                             && RightDownBlockade.getPosY()-posXofMove<0
                             && RightDownBlockade.getPosX()-posYofMove<0
                             && piece.getPosY()-posXofMove < 0
@@ -604,7 +595,7 @@ public class Piece {
             }
             //if goes left down BUT there is blockade
             else if(
-                    this.blockades4.size()!=0
+                    blockades4.size()!=0
                             && piece.getPosY()-posXofMove > 0
                             && piece.getPosX()-posYofMove < 0
                             && LeftDownBlockade.getPosY()-posXofMove > 0
@@ -617,7 +608,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && piece.getPosY()-posXofMove < 0
                             && piece.getPosX()-posYofMove > 0
-                            && this.seenRightUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightUpPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -626,7 +617,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && (piece.getPosY()-posXofMove > 0)
                             && (piece.getPosX()-posYofMove > 0)
-                            && this.seenLeftUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftUpPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -635,7 +626,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && piece.getPosY()-posXofMove > 0
                             && piece.getPosX()-posYofMove < 0
-                            && this.seenLeftDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -644,7 +635,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && piece.getPosY()-posXofMove < 0
                             && piece.getPosX()-posYofMove < 0
-                            && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -654,7 +645,7 @@ public class Piece {
                             && board[posYofMove][posXofMove].getColor()!=piece.getColor()
                             && (piece.getPosY()-posXofMove < 0)
                             && (piece.getPosX()-posYofMove > 0)
-                            && this.seenRightUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightUpPieces.contains(board[posYofMove][posXofMove])
 
             ){
                 ;
@@ -666,7 +657,7 @@ public class Piece {
                             && board[posYofMove][posXofMove].getColor()!=piece.getColor()
                             && (piece.getPosY()-posXofMove > 0 || piece.getPosY()-posXofMove == piece.getPosY())
                             && (piece.getPosX()-posYofMove > 0 || piece.getPosX()-posYofMove == piece.getPosX())
-                            && this.seenLeftUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftUpPieces.contains(board[posYofMove][posXofMove])
             ){
                 ;
                 isLegal = true;
@@ -677,7 +668,7 @@ public class Piece {
                             && board[posYofMove][posXofMove].getColor()!=piece.getColor()
                             && piece.getPosY()-posXofMove > 0
                             && piece.getPosX()-posYofMove < 0
-                            && this.seenLeftDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 ;
                 isLegal = true;
@@ -689,7 +680,7 @@ public class Piece {
                             && piece.getPosY()-posXofMove < 0
                             && piece.getPosX()-posYofMove < 0
                             && !(posXofMove-piece.getPosY()==1 && posYofMove-piece.getPosX()==2)
-                            && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 ;
                 isLegal = true;
@@ -698,12 +689,15 @@ public class Piece {
         else if(piece.getType()=='Q'){
             int i = 1;
             int j=0;
-
+            ArrayList<Piece> blockades5 = new ArrayList<>();
+            ArrayList<Piece> blockades6 = new ArrayList<>();
+            ArrayList<Piece> blockades7 = new ArrayList<>();
+            ArrayList<Piece> blockades8 = new ArrayList<>();
             while(i!=8){
                 int pies = piece.getPosY()+i;
                 if(pies < 8){
                     if(!board[piece.getPosX()][pies].isUsed() && board[piece.getPosX()][pies].getType()!='l'){
-                        this.blockades5.add(board[piece.getPosX()][pies]);
+                        blockades5.add(board[piece.getPosX()][pies]);
                     }
                 }
                 i++;
@@ -713,7 +707,7 @@ public class Piece {
                 int kot = piece.getPosX()-j;
                 if(kot >= 0){
                     if(!board[kot][piece.getPosY()].isUsed() && board[kot][piece.getPosY()].getType()!='l'){
-                        this.blockades6.add(board[kot][piece.getPosY()]);
+                        blockades6.add(board[kot][piece.getPosY()]);
                     }
                 }
                 j++;
@@ -723,7 +717,7 @@ public class Piece {
                 int kot = piece.getPosX()+j;
                 if(kot < 8){
                     if(!board[kot][piece.getPosY()].isUsed() && board[kot][piece.getPosY()].getType()!='l'){
-                        this.blockades7.add(board[kot][piece.getPosY()]);
+                        blockades7.add(board[kot][piece.getPosY()]);
                     }
                 }
                 j++;
@@ -733,7 +727,7 @@ public class Piece {
                 int pies = piece.getPosY()-i;
                 if(pies >= 0){
                     if(!board[piece.getPosX()][pies].isUsed() && board[piece.getPosX()][pies].getType()!='l'){
-                        this.blockades8.add(board[piece.getPosX()][pies]);
+                        blockades8.add(board[piece.getPosX()][pies]);
                     }
                 }
                 i++;
@@ -744,57 +738,61 @@ public class Piece {
             Piece YblockadeFriendlyUp = board[0][0];
             Piece YblockadeFriendlyDown = board[0][0];
             Piece XblockadeFriendlyLeft = board[0][0];
-            if(this.blockades5.size()==0){
+            if(blockades5.size()==0){
 
             }
-            else if(this.blockades5.size()==1){
-                XblockadeFriendlyRight = this.blockades5.get(0);
+            else if(blockades5.size()==1){
+                XblockadeFriendlyRight = blockades5.get(0);
             }
             else{
-                XblockadeFriendlyRight = this.blockades5.get(0);
+                XblockadeFriendlyRight = blockades5.get(0);
             }
-            if(this.blockades6.size()==0){
+            if(blockades6.size()==0){
 
             }
-            else if(this.blockades6.size()==1){
-                YblockadeFriendlyUp = this.blockades6.get(0);
+            else if(blockades6.size()==1){
+                YblockadeFriendlyUp = blockades6.get(0);
             }
             else{
-                YblockadeFriendlyUp = this.blockades6.get(0);
+                YblockadeFriendlyUp = blockades6.get(0);
             }
-            if(this.blockades7.size()==0){
+            if(blockades7.size()==0){
 
             }
-            else if(this.blockades7.size()==1){
-                YblockadeFriendlyDown = this.blockades7.get(0);
+            else if(blockades7.size()==1){
+                YblockadeFriendlyDown = blockades7.get(0);
             }
             else{
-                YblockadeFriendlyDown = this.blockades7.get(0);
+                YblockadeFriendlyDown = blockades7.get(0);
             }
-            if(this.blockades8.size()==0){
+            if(blockades8.size()==0){
 
             }
-            else if(this.blockades8.size()==1){
-                XblockadeFriendlyLeft = this.blockades8.get(0);
+            else if(blockades8.size()==1){
+                XblockadeFriendlyLeft = blockades8.get(0);
             }
             else{
-                XblockadeFriendlyLeft = this.blockades8.get(0);
+                XblockadeFriendlyLeft = blockades8.get(0);
             }
+            ArrayList<Piece> seenLeftUpPieces = new ArrayList<>();
+            ArrayList<Piece> seenRightDownPieces = new ArrayList<>();
+            ArrayList<Piece> seenRightUpPieces = new ArrayList<>();
+            ArrayList<Piece> seenLeftDownPieces = new ArrayList<>();
             Piece RightUpBlockade = null;
             Piece LeftUpBlockade = null;
             Piece RightDownBlockade = null;
             Piece LeftDownBlockade = null;
-            if(this.seenLeftUpPieces.size()!=0){
-                this.seenLeftUpPieces.clear();
+            if(seenLeftUpPieces.size()!=0){
+                seenLeftUpPieces.clear();
             }
-            if(this.seenRightDownPieces.size()!=0){
-                this.seenRightDownPieces.clear();
+            if(seenRightDownPieces.size()!=0){
+                seenRightDownPieces.clear();
             }
-            if(this.seenRightUpPieces.size()!=0){
-                this.seenRightUpPieces.clear();
+            if(seenRightUpPieces.size()!=0){
+                seenRightUpPieces.clear();
             }
-            if(this.seenLeftDownPieces.size()!=0){
-                this.seenLeftDownPieces.clear();
+            if(seenLeftDownPieces.size()!=0){
+                seenLeftDownPieces.clear();
             }
             i = 1;
             j = 1;
@@ -806,7 +804,7 @@ public class Piece {
                 if((pies >= 0) && kot < 8){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenRightUpPieces.add(board[pies][kot]);
+                        seenRightUpPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -822,7 +820,7 @@ public class Piece {
                 if(pies >= 0 && kot >= 0){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenLeftUpPieces.add(board[pies][kot]);
+                        seenLeftUpPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -840,7 +838,7 @@ public class Piece {
                 if(pies < 8 && kot < 8){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenRightDownPieces.add(board[pies][kot]);
+                        seenRightDownPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -856,7 +854,7 @@ public class Piece {
                 if((pies < 8) && (kot >= 0)){
                     if(!board[pies][kot].isUsed() && (board[pies][kot].getColor()!=board[piece.getPosX()][piece.getPosY()].getColor() || board[pies][kot].getType()=='l'))
                     {
-                        this.seenLeftDownPieces.add(board[pies][kot]);
+                        seenLeftDownPieces.add(board[pies][kot]);
                     }
                 }
                 j++;
@@ -864,6 +862,10 @@ public class Piece {
             }
             i = 1;
             j = 1;
+            ArrayList<Piece> blockades = new ArrayList<>();
+            ArrayList<Piece> blockades2 = new ArrayList<>();
+            ArrayList<Piece> blockades3 = new ArrayList<>();
+            ArrayList<Piece> blockades4 = new ArrayList<>();
             while(j!=7 && i!=7){
                 //X
                 int kot = piece.getPosY()+j;
@@ -872,18 +874,18 @@ public class Piece {
                 if(pies >= 0 && kot < 8){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades.add(board[pies][kot]);
+                        blockades.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
 
             }
-            if(this.blockades.size()==0){
+            if(blockades.size()==0){
 
             }
             else{
-                RightUpBlockade = this.blockades.get(0);
+                RightUpBlockade = blockades.get(0);
             }
             i = 1;
             j = 1;
@@ -895,17 +897,17 @@ public class Piece {
                 if(!(pies<0) && !(kot<0)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades2.add(board[pies][kot]);
+                        blockades2.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
             }
-            if(this.blockades2.size()==0){
+            if(blockades2.size()==0){
 
             }
             else{
-                LeftUpBlockade = this.blockades2.get(0);
+                LeftUpBlockade = blockades2.get(0);
             }
             i = 1;
             j = 1;
@@ -918,18 +920,18 @@ public class Piece {
                 if(!(pies>=8) && !(kot>=8)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades3.add(board[pies][kot]);
+                        blockades3.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
 
             }
-            if(this.blockades3.size()==0){
+            if(blockades3.size()==0){
 
             }
             else{
-                RightDownBlockade = this.blockades3.get(0);
+                RightDownBlockade = blockades3.get(0);
             }
             i = 1;
             j = 1;
@@ -941,19 +943,19 @@ public class Piece {
                 if(!(pies>=8) && !(kot<0)){
                     if(!board[pies][kot].isUsed() && board[pies][kot].getType()!='l')
                     {
-                        this.blockades4.add(board[pies][kot]);
+                        blockades4.add(board[pies][kot]);
                     }
                 }
                 j++;
                 i++;
 
             }
-            if(this.blockades4.size()!=0){
-                LeftDownBlockade = this.blockades4.get(0);
+            if(blockades4.size()!=0){
+                LeftDownBlockade = blockades4.get(0);
             }
             //if goes right up BUT there is blockade
             if(
-                    this.blockades.size()!=0
+                    blockades.size()!=0
                             && RightUpBlockade.getPosY()-posXofMove < 0
                             && RightUpBlockade.getPosX()-posYofMove > 0
                             && piece.getPosY()-posXofMove < 0
@@ -963,7 +965,7 @@ public class Piece {
             }
             //if goes left up BUT there is blockade
             else if(
-                    this.blockades2.size()!=0
+                    blockades2.size()!=0
                             && LeftUpBlockade.getPosY()-posXofMove > 0
                             && LeftUpBlockade.getPosX()-posYofMove > 0
                             && LeftUpBlockade.getPosY()-piece.getPosY()<0
@@ -975,7 +977,7 @@ public class Piece {
             }
             //if goes right down BUT there is blockade
             else if(
-                    this.blockades3.size()!=0
+                    blockades3.size()!=0
                             && RightDownBlockade.getPosY()-posXofMove<0
                             && RightDownBlockade.getPosX()-posYofMove<0
                             && piece.getPosY()-posXofMove < 0
@@ -985,7 +987,7 @@ public class Piece {
             }
             //if goes left down BUT there is blockade
             else if(
-                    this.blockades4.size()!=0
+                    blockades4.size()!=0
                             && piece.getPosY()-posXofMove > 0
                             && piece.getPosX()-posYofMove < 0
                             && LeftDownBlockade.getPosY()-posXofMove > 0
@@ -998,7 +1000,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && piece.getPosY()-posXofMove < 0
                             && piece.getPosX()-posYofMove > 0
-                            && this.seenRightUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightUpPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -1007,7 +1009,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && (piece.getPosY()-posXofMove > 0)
                             && (piece.getPosX()-posYofMove > 0)
-                            && this.seenLeftUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftUpPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -1016,7 +1018,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && piece.getPosY()-posXofMove > 0
                             && piece.getPosX()-posYofMove < 0
-                            && this.seenLeftDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -1025,7 +1027,7 @@ public class Piece {
                     board[posYofMove][posXofMove].getType()=='l'
                             && piece.getPosY()-posXofMove < 0
                             && piece.getPosX()-posYofMove < 0
-                            && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 isLegal = true;
             }
@@ -1035,7 +1037,7 @@ public class Piece {
                             && board[posYofMove][posXofMove].getColor()!=piece.getColor()
                             && (piece.getPosY()-posXofMove < 0)
                             && (piece.getPosX()-posYofMove > 0)
-                            && this.seenRightUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightUpPieces.contains(board[posYofMove][posXofMove])
 
             ){
                 ;
@@ -1047,7 +1049,7 @@ public class Piece {
                             && board[posYofMove][posXofMove].getColor()!=piece.getColor()
                             && (piece.getPosY()-posXofMove > 0 || piece.getPosY()-posXofMove == piece.getPosY())
                             && (piece.getPosX()-posYofMove > 0 || piece.getPosX()-posYofMove == piece.getPosX())
-                            && this.seenLeftUpPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftUpPieces.contains(board[posYofMove][posXofMove])
             ){
                 ;
                 isLegal = true;
@@ -1058,7 +1060,7 @@ public class Piece {
                             && board[posYofMove][posXofMove].getColor()!=piece.getColor()
                             && piece.getPosY()-posXofMove > 0
                             && piece.getPosX()-posYofMove < 0
-                            && this.seenLeftDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenLeftDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 ;
                 isLegal = true;
@@ -1070,7 +1072,7 @@ public class Piece {
                             && piece.getPosY()-posXofMove < 0
                             && piece.getPosX()-posYofMove < 0
                             && !(posXofMove-piece.getPosY()==1 && posYofMove-piece.getPosX()==2)
-                            && this.seenRightDownPieces.contains(board[posYofMove][posXofMove])
+                            && seenRightDownPieces.contains(board[posYofMove][posXofMove])
             ){
                 ;
                 isLegal = true;
@@ -1081,7 +1083,7 @@ public class Piece {
                             && piece.getPosX() - posYofMove > 0
                             && posYofMove - YblockadeFriendlyUp.getPosX() < 0
                             && YblockadeFriendlyUp.getPosX() < piece.getPosX()
-                            && this.blockades6.size()!=0
+                            && blockades6.size()!=0
             )
             {
                 isLegal=false;
@@ -1093,7 +1095,7 @@ public class Piece {
                             && piece.getPosX() - posYofMove < 0
                             && posYofMove - YblockadeFriendlyDown.getPosX() > 0
                             && YblockadeFriendlyDown.getPosX() > piece.getPosX()
-                            && this.blockades7.size()!=0
+                            && blockades7.size()!=0
             )
             {
                 isLegal=false;
@@ -1105,7 +1107,7 @@ public class Piece {
                             && posXofMove - piece.getPosY() > 0
                             && posXofMove - XblockadeFriendlyRight.getPosY() > 0
                             && piece.getPosY() - XblockadeFriendlyRight.getPosY() < 0
-                            && this.blockades5.size()!=0
+                            && blockades5.size()!=0
             )
             {
                 isLegal=false;
@@ -1118,7 +1120,7 @@ public class Piece {
                             && posYofMove - XblockadeFriendlyLeft.getPosX() == 0
                             && XblockadeFriendlyLeft.getPosX() == piece.getPosX()
                             && posXofMove - XblockadeFriendlyLeft.getPosY() < 0
-                            && this.blockades8.size()!=0
+                            && blockades8.size()!=0
             )
             {
                 isLegal=false;
@@ -1378,19 +1380,15 @@ public class Piece {
     public void setUsed(boolean used) {
         isUsed = used;
     }
-    public boolean isKingAttacked(Piece piece, Piece board3[][]){
+    public boolean isKingAttacked(Piece piece, Piece[][] board3){
         ArrayList<Piece> seenRightPieces = new ArrayList<Piece>();
         ArrayList<Piece> seenLeftPieces = new ArrayList<Piece>();
         ArrayList<Piece> seenUpPieces = new ArrayList<Piece>();
         ArrayList<Piece> seenDownPieces = new ArrayList<Piece>();
-        this.blockades.clear();
-        this.blockades2.clear();
-        this.blockades3.clear();
-        this.blockades4.clear();
-        this.blockades5.clear();
-        this.blockades6.clear();
-        this.blockades7.clear();
-        this.blockades8.clear();
+        ArrayList<Piece> blockades5 = new ArrayList<>();
+        ArrayList<Piece> blockades6 = new ArrayList<>();
+        ArrayList<Piece> blockades7 = new ArrayList<>();
+        ArrayList<Piece> blockades8 = new ArrayList<>();
         boolean papuga = false;
         int i = 1;
         int j=0;
@@ -1398,7 +1396,7 @@ public class Piece {
             int pies = piece.getPosY()+i;
             if(pies < 8){
                 if(board3[piece.getPosX()][pies]!=piece && board3[piece.getPosX()][pies].getType()!='l' && board3[piece.getPosX()][pies].getType()!='l'){
-                    this.blockades5.add(board3[piece.getPosX()][pies]);
+                    blockades5.add(board3[piece.getPosX()][pies]);
                 }
             }
             i++;
@@ -1407,8 +1405,8 @@ public class Piece {
         while(j!=8){
             int kot = piece.getPosX()-j;
             if(kot >= 0){
-                if(!board3[kot][piece.getPosY()].isUsed() && board3[kot][piece.getPosY()].getType()!='l'){
-                    this.blockades6.add(board3[kot][piece.getPosY()]);
+                if(board3[kot][piece.getPosY()].getType()!=piece.getType() && board3[kot][piece.getPosY()].getType()!='l'){
+                    blockades6.add(board3[kot][piece.getPosY()]);
                 }
             }
             j++;
@@ -1417,8 +1415,8 @@ public class Piece {
         while(j!=8){
             int kot = piece.getPosX()+j;
             if(kot < 8){
-                if(!board3[kot][piece.getPosY()].isUsed() && board3[kot][piece.getPosY()].getType()!='l'){
-                    this.blockades7.add(board3[kot][piece.getPosY()]);
+                if(board3[kot][piece.getPosY()].getType()!=piece.getType() && board3[kot][piece.getPosY()].getType()!='l'){
+                    blockades7.add(board3[kot][piece.getPosY()]);
                 }
             }
             j++;
@@ -1428,7 +1426,7 @@ public class Piece {
             int pies = piece.getPosY()-i;
             if(pies >= 0){
                 if(board3[piece.getPosX()][pies]!=piece && board3[piece.getPosX()][pies].getType()!='l' && board3[piece.getPosX()][pies].getType()!='l'){
-                    this.blockades8.add(board3[piece.getPosX()][pies]);
+                    blockades8.add(board3[piece.getPosX()][pies]);
                 }
             }
             i++;
@@ -1437,17 +1435,17 @@ public class Piece {
         Piece YblockadeFriendlyUp = null;
         Piece YblockadeFriendlyDown = null;
         Piece XblockadeFriendlyLeft = null;
-        if(this.blockades5.size()!=0){
-            XblockadeFriendlyRight = this.blockades5.get(0);
+        if(blockades5.size()!=0){
+            XblockadeFriendlyRight = blockades5.get(0);
         }
-        if(this.blockades6.size()!=0){
-            YblockadeFriendlyUp = this.blockades6.get(0);
+        if(blockades6.size()!=0){
+            YblockadeFriendlyUp = blockades6.get(0);
         }
-        if(this.blockades7.size()!=0){
-            YblockadeFriendlyDown = this.blockades7.get(0);
+        if(blockades7.size()!=0){
+            YblockadeFriendlyDown = blockades7.get(0);
         }
-        if(this.blockades8.size()!=0){
-            XblockadeFriendlyLeft = this.blockades8.get(0);
+        if(blockades8.size()!=0){
+            XblockadeFriendlyLeft = blockades8.get(0);
         }
         Piece RightUpBlockade = null;
         Piece LeftUpBlockade = null;
@@ -1455,6 +1453,10 @@ public class Piece {
         Piece LeftDownBlockade = null;
         i = 1;
         j = 1;
+        ArrayList<Piece> blockades = new ArrayList<>();
+        ArrayList<Piece> blockades2 = new ArrayList<>();
+        ArrayList<Piece> blockades3 = new ArrayList<>();
+        ArrayList<Piece> blockades4 = new ArrayList<>();
         while(j!=7 && i!=7){
             //X
             int kot = piece.getPosY()+j;
@@ -1463,15 +1465,15 @@ public class Piece {
             if(pies >= 0 && kot < 8){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.blockades.add(board3[pies][kot]);
+                    blockades.add(board3[pies][kot]);
                 }
             }
             j++;
             i++;
 
         }
-        if(this.blockades.size()!=0){
-            RightUpBlockade = this.blockades.get(0);
+        if(blockades.size()!=0){
+            RightUpBlockade = blockades.get(0);
         }
         i = 1;
         j = 1;
@@ -1483,14 +1485,14 @@ public class Piece {
             if(!(pies<0) && !(kot<0)){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.blockades2.add(board3[pies][kot]);
+                    blockades2.add(board3[pies][kot]);
                 }
             }
             j++;
             i++;
         }
-        if(this.blockades2.size()!=0){
-            LeftUpBlockade = this.blockades2.get(0);
+        if(blockades2.size()!=0){
+            LeftUpBlockade = blockades2.get(0);
         }
         i = 1;
         j = 1;
@@ -1500,15 +1502,15 @@ public class Piece {
             if(!(pies>=8) && !(kot>=8)){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.blockades3.add(board3[pies][kot]);
+                    blockades3.add(board3[pies][kot]);
                 }
             }
             j++;
             i++;
 
         }
-        if(this.blockades3.size()!=0){
-            RightDownBlockade = this.blockades3.get(0);
+        if(blockades3.size()!=0){
+            RightDownBlockade = blockades3.get(0);
         }
         i = 1;
         j = 1;
@@ -1520,27 +1522,31 @@ public class Piece {
             if(kot >= 0 && pies < 8){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.blockades4.add(board3[pies][kot]);
+                    blockades4.add(board3[pies][kot]);
                 }
             }
             j++;
             i++;
 
         }
-        if(this.blockades4.size()!=0){
-            LeftDownBlockade = this.blockades4.get(0);
+        ArrayList<Piece> seenLeftUpPieces = new ArrayList<>();
+        ArrayList<Piece> seenRightDownPieces = new ArrayList<>();
+        ArrayList<Piece> seenRightUpPieces = new ArrayList<>();
+        ArrayList<Piece> seenLeftDownPieces = new ArrayList<>();
+        if(blockades4.size()!=0){
+            LeftDownBlockade = blockades4.get(0);
         }
-        if(this.seenLeftUpPieces.size()!=0){
-            this.seenLeftUpPieces.clear();
+        if(seenLeftUpPieces.size()!=0){
+            seenLeftUpPieces.clear();
         }
-        if(this.seenRightDownPieces.size()!=0){
-            this.seenRightDownPieces.clear();
+        if(seenRightDownPieces.size()!=0){
+            seenRightDownPieces.clear();
         }
-        if(this.seenRightUpPieces.size()!=0){
-            this.seenRightUpPieces.clear();
+        if(seenRightUpPieces.size()!=0){
+            seenRightUpPieces.clear();
         }
-        if(this.seenLeftDownPieces.size()!=0){
-            this.seenLeftDownPieces.clear();
+        if(seenLeftDownPieces.size()!=0){
+            seenLeftDownPieces.clear();
         }
         i = 1;
         j = 1;
@@ -1552,7 +1558,7 @@ public class Piece {
             if((pies >= 0) && kot < 8){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.seenRightUpPieces.add(board3[pies][kot]);
+                    seenRightUpPieces.add(board3[pies][kot]);
                 }
             }
             j++;
@@ -1568,7 +1574,7 @@ public class Piece {
             if(pies >= 0 && kot >= 0){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.seenLeftUpPieces.add(board3[pies][kot]);
+                    seenLeftUpPieces.add(board3[pies][kot]);
                 }
             }
             j++;
@@ -1585,7 +1591,7 @@ public class Piece {
             if(pies < 8 && kot < 8){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.seenRightDownPieces.add(board3[pies][kot]);
+                    seenRightDownPieces.add(board3[pies][kot]);
                 }
             }
             j++;
@@ -1601,7 +1607,7 @@ public class Piece {
             if((pies < 8) && (kot >= 0)){
                 if(board3[pies][kot]!=piece && board3[pies][kot].getType()!='l')
                 {
-                    this.seenLeftDownPieces.add(board3[pies][kot]);
+                    seenLeftDownPieces.add(board3[pies][kot]);
                 }
             }
             j++;
@@ -1622,7 +1628,7 @@ public class Piece {
         while(j!=8){
             int kot = piece.getPosX()-j;
             if(kot >= 0){
-                if(!board3[kot][piece.getPosY()].isUsed()){
+                if(board3[kot][piece.getPosY()]!=piece){
                     seenUpPieces.add(board3[kot][piece.getPosY()]);
                 }
             }
@@ -1632,7 +1638,7 @@ public class Piece {
         while(j!=8){
             int kot = piece.getPosX()+j;
             if(kot < 8){
-                if(!board3[kot][piece.getPosY()].isUsed()){
+                if(board3[kot][piece.getPosY()]!=piece){
                     seenDownPieces.add(board3[kot][piece.getPosY()]);
                 }
             }
@@ -1760,7 +1766,7 @@ public class Piece {
         while(j!=8){
             int kot = piece.getPosX()+j;
             if(kot < 8){
-                if(!board3[kot][piece.getPosY()].isUsed() && board3[kot][piece.getPosY()].getType()!='l' && board3[kot][piece.getPosY()].getColor()!=piece.getColor()){
+                if(board3[kot][piece.getPosY()].getType()!=piece.getType() && board3[kot][piece.getPosY()].getType()!='l' && board3[kot][piece.getPosY()].getColor()!=piece.getColor()){
                     DownAttackers.add(board3[kot][piece.getPosY()]);
                 }
             }
@@ -1770,7 +1776,7 @@ public class Piece {
         while(i!=8){
             int kot = piece.getPosX()-i;
             if(kot >= 0){
-                if(!board3[kot][piece.getPosY()].isUsed() && board3[kot][piece.getPosY()].getType()!='l' && board3[kot][piece.getPosY()].getColor()!=piece.getColor()){
+                if(board3[kot][piece.getPosY()].getType()!=piece.getType() && board3[kot][piece.getPosY()].getType()!='l' && board3[kot][piece.getPosY()].getColor()!=piece.getColor()){
                     UpAttackers.add(board3[kot][piece.getPosY()]);
                 }
             }
@@ -1801,25 +1807,25 @@ public class Piece {
         //blockades7 = down
         //blockades8 = left
         if(rightUpAttacker!=null){
-            if(RightUpBlockade==rightUpAttacker && this.seenRightUpPieces.contains(rightUpAttacker) && (rightUpAttacker.getType()=='B' || rightUpAttacker.getType()=='Q') && rightUpAttacker.getColor()!=piece.getColor()){
+            if(RightUpBlockade==rightUpAttacker && seenRightUpPieces.contains(rightUpAttacker) && (rightUpAttacker.getType()=='B' || rightUpAttacker.getType()=='Q') && rightUpAttacker.getColor()!=piece.getColor()){
                 papuga = true;
 
             }
         }
         if(leftUpAttacker!=null){
-            if(LeftUpBlockade==leftUpAttacker && this.seenLeftUpPieces.contains(leftUpAttacker) && (leftUpAttacker.getType()=='B' || leftUpAttacker.getType()=='Q') && leftUpAttacker.getColor()!=piece.getColor()){
+            if(LeftUpBlockade==leftUpAttacker && seenLeftUpPieces.contains(leftUpAttacker) && (leftUpAttacker.getType()=='B' || leftUpAttacker.getType()=='Q') && leftUpAttacker.getColor()!=piece.getColor()){
                 papuga = true;
 
             }
         }
         if(rightDownAttacker!=null){
-            if(RightDownBlockade==rightDownAttacker && this.seenRightDownPieces.contains(rightDownAttacker) && (rightDownAttacker.getType()=='B' || rightDownAttacker.getType()=='Q') && rightDownAttacker.getColor()!=piece.getColor()){
+            if(RightDownBlockade==rightDownAttacker && seenRightDownPieces.contains(rightDownAttacker) && (rightDownAttacker.getType()=='B' || rightDownAttacker.getType()=='Q') && rightDownAttacker.getColor()!=piece.getColor()){
                 papuga = true;
 
             }
         }
         if(leftDownAttacker!=null){
-            if(LeftDownBlockade==leftDownAttacker && this.seenLeftDownPieces.contains(leftDownAttacker) && (leftDownAttacker.getType()=='B' || leftDownAttacker.getType()=='Q') && leftDownAttacker.getColor()!=piece.getColor()){
+            if(LeftDownBlockade==leftDownAttacker && seenLeftDownPieces.contains(leftDownAttacker) && (leftDownAttacker.getType()=='B' || leftDownAttacker.getType()=='Q') && leftDownAttacker.getColor()!=piece.getColor()){
                 papuga = true;
 
             }
@@ -1902,6 +1908,66 @@ public class Piece {
                 papuga=true;
             }
         }
+        kot = piece.getPosY()+1;
+        pies = piece.getPosX()+1;
+        if(pies < 8 && kot < 8){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
+        kot = piece.getPosY()+1;
+        pies = piece.getPosX()-1;
+        if(pies >= 0 && kot < 8){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
+
+        kot = piece.getPosY()-1;
+        pies = piece.getPosX()-1;
+        if(pies >= 0 && kot >= 0){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
+
+        kot = piece.getPosY()-1;
+        pies = piece.getPosX()+1;
+        if(pies < 8 && kot >= 0){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
+
+        kot = piece.getPosY()-1;
+        pies = piece.getPosX();
+        if(kot >= 0){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
+
+        kot = piece.getPosY()+1;
+        pies = piece.getPosX();
+        if(kot < 8){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
+        kot = piece.getPosY();
+        pies = piece.getPosX()-1;
+        if(pies >= 0){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
+        kot = piece.getPosY();
+        pies = piece.getPosX()+1;
+        if(pies < 8){
+            if(board3[pies][kot].getColor()!=piece.getColor() && board3[pies][kot].getType()=='K'){
+                papuga = true;
+            }
+        }
         if(piece.getColor()==true){
             kot = piece.getPosY()-1; //X
             pies = piece.getPosX()-1; //Y
@@ -1934,7 +2000,6 @@ public class Piece {
                 }
             }
         }
-
         return papuga;
     }
 
